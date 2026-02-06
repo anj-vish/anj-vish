@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Our Story ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin:0;
+  font-family:'Inter', sans-serif;
+  background:#f9f9fb;
+  color:#2b2b2b;
+}
+#glow-cursor {
+  position: fixed;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255,120,170,0.25), transparent 60%);
+  mix-blend-mode: screen;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+}
+.card {
+  perspective: 1000px;
+}
+
+.card:hover {
+  transform: translateY(-8px) rotateX(4deg) rotateY(4deg);
+}
+
+.icon:hover {
+  animation: pulse 1s infinite;
+}
+
+@keyframes heartPop {
+  to { transform: translateY(-60px); opacity:0; }
+}
+
+@keyframes pulse {
+  50% { transform: scale(1.08); }
+}
+.hero-img {
+  background-attachment: fixed;
+}
+.card {
+  opacity:0;
+  transform:translateY(30px);
+}
+
+.card.show {
+  opacity:1;
+  transform:translateY(0);
+  transition:0.6s ease;
+}
+
+#magic-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 1;          /* was -1 */
+  pointer-events: none;
+}
+
+#love-overlay {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.25);
+  backdrop-filter:blur(6px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:0.4s ease;
+  z-index:9999;
+}
+#love-overlay.show {
+  opacity:1;
+  pointer-events:auto;
+}
+
+.love-box {
+  background:linear-gradient(135deg,#ff5f9e,#ff9ac3);
+  color:white;
+  padding:30px 40px;
+  border-radius:22px;
+  font-size:1.1rem;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(255,95,158,0.45);
+  animation: pop 0.4s ease;
+  max-width:80%;
+}
+
+@keyframes pop {
+  from { transform:scale(0.8); opacity:0; }
+  to { transform:scale(1); opacity:1; }
+}
+
+.music-control {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  z-index: 999;
+  user-select: none;
+}
+
+.love-line {
+  max-width: 1000px;
+  margin: 16px auto 10px;
+  text-align: center;
+  font-style: italic;
+  color: #c65a74;
+}
+
+.progress {
+  max-width:1000px;
+  margin:10px auto 25px;
+  text-align:center;
+  font-size:0.95rem;
+  color:#c65a74;
+  animation: fadePulse 3s ease-in-out infinite;
+}
+
+@keyframes fadePulse {
+  0%,100% { opacity:0.6; }
+  50% { opacity:1; }
+}
+
+.love-banner {
+  max-width:600px;
+  margin:20px auto 35px;
+  padding:14px 26px;
+  background:linear-gradient(135deg,#ff4f8b,#ff85b3);
+  color:white;
+  text-align:center;
+  border-radius:999px;
+  font-size:0.95rem;
+  box-shadow:0 10px 30px rgba(255,79,139,0.35);
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-6px); }
+}
+
+.card:not(.locked) {
+  animation: glow 3s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%,100% { box-shadow:0 8px 25px rgba(0,0,0,0.06); }
+  50% { box-shadow:0 12px 35px rgba(198,90,116,0.25); }
+}
+
+.hero {
+  position: relative;
+  max-width: 1000px;
+  margin: 40px auto 30px;
+  border-radius: 18px;
+  overflow: hidden;
+  height: 300px;
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+}
+
+.hero-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  z-index: 2;
+}
+
+.hero-text h1 {
+  font-family:'Playfair Display', serif;
+  font-size: 3rem;
+}
+
+.container {
+  max-width:1000px;
+  margin:0 auto;
+  padding:20px;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap:20px;
+}
+
+.card {
+  background:white;
+  border-radius:18px;
+  padding:18px 14px;
+  text-align:center;
+  cursor:pointer;
+  transition:0.35s ease;
+  box-shadow:0 8px 25px rgba(0,0,0,0.06);
+  position:relative;
+}
+
+.card:hover {
+  transform:translateY(-8px);
+}
+
+.icon {
+  width:200px;
+  height:200px;
+  margin:0 auto 12px;
+}
+
+.title {
+  font-weight:600;
+}
+
+.status {
+  margin-top:10px;
+  font-size:0.8rem;
+  color:#c65a74;
+}
+
+.footer {
+  text-align:center;
+  margin:50px 20px;
+  color:#777;
+}
+
+#love-toast {
+  position:fixed;
+  bottom:40px;
+  left:50%;
+  transform:translateX(-50%);
+  background:linear-gradient(135deg,#ff4f8b,#ff85b3);
+  color:white;
+  padding:14px 26px;
+  border-radius:999px;
+  box-shadow:0 10px 30px rgba(255,79,139,0.4);
+  opacity:0;
+  pointer-events:none;
+  transition:0.5s ease;
+}
+#love-toast.show {
+  opacity:1;
+  bottom:60px;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="magic-bg"></canvas>
+
+<div class="hero">
+  <img src="handshake.png" class="hero-img">
+  <div class="hero-text">
+    <h1>Anjali & Vishal</h1>
+    <h2>This week is just an excuse to love you louder</h2>
+
+  </div>
+</div>
+
+<div class="love-banner">
+  <span id="progress-text"></span>
+</div>
+
+<div class="love-line">
+  “Tumhare saath guzra har lamha Valentine’s Day ki tarah haseen lagta hai.”
+</div>
+
+<audio id="bg-music" loop>
+  <source src="audio-head.mp3" type="audio/mpeg">
+</audio>
+
+<div class="music-control" id="music-btn">🔊 heartbeat</div>
+
+<div class="container">
+  <div class="grid">
+    <div class="card" id="d7" onclick="openDay(7,'rose.html')">
+      <img class="icon" src="rose.png"/>
+      <div class="title">Rose Day</div>
+      <div class="status" id="c7"></div>
+    </div>
+    <div class="card" id="d8" onclick="openDay(8,'propose.html')">
+      <img class="icon" src="propose.png"/>
+      <div class="title">Propose Day</div>
+      <div class="status" id="c8"></div>
+    </div>
+    <div class="card" id="d9" onclick="openDay(9,'chocolate.html')">
+      <img class="icon" src="chocolate.png"/>
+      <div class="title">Chocolate Day</div>
+      <div class="status" id="c9"></div>
+    </div>
+    <div class="card" id="d10" onclick="openDay(10,'teddy.html')">
+      <img class="icon" src="teddy.png"/>
+      <div class="title">Teddy Day</div>
+      <div class="status" id="c10"></div>
+    </div>
+    <div class="card" id="d11" onclick="openDay(11,'promise.html')">
+      <img class="icon" src="promise.png"/>
+      <div class="title">Promise Day</div>
+      <div class="status" id="c11"></div>
+    </div>
+    <div class="card" id="d12" onclick="openDay(12,'hug.html')">
+      <img class="icon" src="hug.png"/>
+      <div class="title">Hug Day</div>
+      <div class="status" id="c12"></div>
+    </div>
+    <div class="card" id="d13" onclick="openDay(13,'kiss.html')">
+      <img class="icon" src="kiss.png"/>
+      <div class="title">Kiss Day</div>
+      <div class="status" id="c13"></div>
+    </div>
+    <div class="card" id="d14" onclick="openDay(14,'valentine.html')">
+      <img class="icon" src="valentine.png"/>
+      <div class="title">Valentine</div>
+      <div class="status" id="c14"></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">For my Shareek-e-Hayat<br>— Vishal</div>
+
+<div id="love-overlay">
+  <div class="love-box" id="love-message"></div>
+</div>
+
+<script>
+
+const glow = document.getElementById("glow-cursor");
+
+document.addEventListener("mousemove", e => {
+  glow.style.left = e.clientX + "px";
+  glow.style.top = e.clientY + "px";
+});
+
+const hero = document.querySelector(".hero-img");
+
+document.addEventListener("mousemove", e => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 10;
+  const y = (e.clientY / window.innerHeight - 0.5) * 10;
+  hero.style.transform = `scale(1.05) translate(${x}px, ${y}px)`;
+});
+
+const teasingMessages = [
+  "Thoda sabr... pyaar thoda aur khoobsurat ho raha hai 💖",
+  "Abhi nahi, kuch pal intezaar bhi romance hota hai ✨",
+  "Ruko zara... kahani abhi baaki hai 💫",
+  "Surprise ko thoda aur waqt do 😉",
+  "Har cheez apne waqt pe magic ban jaati hai 💕",
+  "Ami Tomake Bhalobasi 💖",
+  "Wait please😉"
+];
+
+function openDay(day, page){
+  let today = new Date().getDate();
+  if(today >= day) window.location = page;
+  else showLoveMessage(teasingMessages[Math.floor(Math.random()*teasingMessages.length)]);
+}
+
+function typeText(el, text) {
+  el.innerHTML = "";
+  let i = 0;
+  let interval = setInterval(()=>{
+    el.innerHTML += text[i++];
+    if(i >= text.length) clearInterval(interval);
+  }, 40);
+}
+
+function update(){
+  let today = new Date().getDate();
+  let dayMessages = {
+    7:"to bloom 🌹",8:"to confess 💍",9:"to sweeten 🍫",
+    10:"to cuddle ❤️",11:"to promise 💖",
+    12:"to hug 💞",13:"to kiss 💋",14:"to forever ❤️"
+  };
+
+  for(let d=7; d<=14; d++){
+    let status = document.getElementById("c"+d);
+    if(today < d) status.innerHTML = (d-today)+" day(s) "+dayMessages[d];
+    else status.innerHTML = "Unlocked";
+  }
+
+  let progress = Math.min(Math.max(today-6,0),8);
+  let progressMessages = [
+    "Our story begins 🌷",
+    "One day unlocked 💖",
+    "Two moments down ✨",
+    "Three days unlocked 💞",
+    "Halfway through 💫",
+    "Almost there ❤️",
+    "Only two days left 💍",
+    "Tomorrow is Valentine 💕",
+    "It’s our Valentine 💘"
+  ];
+  typeText(document.getElementById("progress-text"), progressMessages[progress]);
+}
+update();
+
+/* MUSIC */
+const music = document.getElementById("bg-music");
+const btn = document.getElementById("music-btn");
+let isPlaying = false;
+music.volume = 0;
+
+function fadeIn(){
+  let v=0;
+  const fade=setInterval(()=>{
+    if(v<0.6){ v+=0.02; music.volume=v; }
+    else clearInterval(fade);
+  },100);
+}
+
+btn.onclick = ()=>{
+  if(!isPlaying){
+    music.play(); fadeIn();
+    btn.innerText="🔈 Playing";
+    isPlaying=true;
+  } else {
+    music.pause();
+    btn.innerText="🔇 Muted";
+    isPlaying=false;
+  }
+};
+
+window.addEventListener("click",()=>{
+  if(!isPlaying){
+    music.play(); fadeIn();
+    btn.innerText="🔈 Playing";
+    isPlaying=true;
+  }
+},{once:true});
+
+/* CLICK HEART */
+function popHeart(x,y){
+  let h = document.createElement("div");
+  h.innerText="❤️";
+  h.style.position="fixed";
+  h.style.left=x+"px";
+  h.style.top=y+"px";
+  h.style.fontSize="20px";
+  h.style.pointerEvents="none";
+  h.style.animation="heartPop 1s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),1000);
+}
+document.addEventListener("click",e=>{
+  popHeart(e.clientX,e.clientY);
+});
+
+/* LOVE OVERLAY */
+function showLoveMessage(text){
+  let overlay=document.getElementById("love-overlay");
+  let box=document.getElementById("love-message");
+  box.innerText=text;
+  overlay.classList.add("show");
+  setTimeout(()=>overlay.classList.remove("show"),2500);
+}
+
+/* FLOATING MAGIC BACKGROUND */
+const canvas = document.getElementById("magic-bg");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+const symbols = ["❤️","🌹","🌸","💖","✨"];
+
+ let particles = [];
+const total = 40;
+const cols = 8;
+const rows = 5;
+
+for(let i=0;i<total;i++){
+  const col = i % cols;
+  const row = Math.floor(i / cols);
+
+  particles.push({
+    x: (canvas.width / cols) * col + Math.random()*50,
+    y: (canvas.height / rows) * row + Math.random()*50,
+    speed: Math.random()*0.6 + 0.3,
+    icon: symbols[Math.floor(Math.random()*symbols.length)],
+    size: Math.random()*10 + 18
+  });
+}
+
+
+function animateMagic(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.globalAlpha = 0.7;
+
+  particles.forEach(p=>{
+    p.y -= p.speed;
+    if(p.y < -30){
+      p.y = canvas.height + 30;
+      p.x = Math.random()*canvas.width;
+      p.icon = symbols[Math.floor(Math.random()*symbols.length)];
+    }
+    ctx.font = p.size + "px serif";
+    ctx.fillText(p.icon, p.x, p.y);
+  });
+
+  requestAnimationFrame(animateMagic);
+}
+animateMagic();
+
+/* CARD REVEAL */
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add("show");
+    }
+  });
+});
+document.querySelectorAll(".card").forEach(c=>{
+  observer.observe(c);
+});
+</script>
+
+
+<div id="glow-cursor"></div>
+
+</body>
+</html>
