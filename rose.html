@@ -153,8 +153,6 @@ const promptMsg = document.getElementById("prompt");
 // ---- Magic Keyboard ----
 const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 const keyboard = document.getElementById("keyboard");
-const nameInput = document.getElementById("nameInput");
-
 function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
 function buildKeyboard() {
   keyboard.innerHTML="";
@@ -177,8 +175,7 @@ buildKeyboard();
 function checkName(){
   const val=nameInput.value.toLowerCase().trim();
   if(val===bannedName){promptMsg.innerText="😏 This name doesn't exist! Try your own magic.";document.getElementById("teaseSound").play();nameInput.value="";return;}
-  if(val===herName){ startRomanticEntry();   // 🔥 music only on correct name
-
+  if(val===herName){ document.getElementById("bgMusic").play().catch(()=>{});
  document.getElementById("lock").classList.add("hidden");
  startChallenge1();}
   else{const msgs=["The rose is only for one 🌹Nope, only one name 💔","Hmm… not quite 😌","Nope, only one name 💔","Try again, pick the correct name 😏"];promptMsg.innerText=msgs[Math.floor(Math.random()*msgs.length)];document.getElementById("teaseSound").play();nameInput.value="";}
@@ -296,7 +293,7 @@ function grandFinale(){
 // ---- Interactive Garden ----
 function unlockGarden(){
   document.getElementById("garden").classList.remove("hidden");
-      startRomanticEntry();
+
   setTimeout(()=>{
     const hint = document.getElementById("roseHint");
     hint.style.opacity = "1";
@@ -334,102 +331,7 @@ document.addEventListener('mousemove', function(e){
   setTimeout(()=>{sparkle.style.transform='translateY(-30px) scale(0.5)'; sparkle.style.opacity=0;},10);
   setTimeout(()=>{sparkle.remove();},500);
 });
- // ---- Romantic Entry (music only after correct name) ----
-function startRomanticEntry(){
-
- const bgMusic = document.getElementById("bgMusic");
- const voice = document.getElementById("voiceNote");
-
- // smooth volume fade
- bgMusic.volume = 0;
- bgMusic.play().catch(()=>{});
-
- let vol = 0;
- let fade = setInterval(()=>{
-   if(vol >= 1){
-     clearInterval(fade);
-   } else{
-     vol += 0.05;
-     bgMusic.volume = vol;
-   }
- },200);
-
- // optional soft voice start
- if(voice){
-   setTimeout(()=>voice.play().catch(()=>{}),1500);
- }
-
- // small rose burst when she enters correct name
- for(let i=0;i<25;i++){
-   let r=document.createElement("div");
-   r.innerText="🌹";
-   r.style.position="fixed";
-   r.style.left=window.innerWidth/2+"px";
-   r.style.top=window.innerHeight/2+"px";
-   r.style.fontSize=20+Math.random()*30+"px";
-   r.style.pointerEvents="none";
-   document.body.appendChild(r);
-
-   let x=(Math.random()-0.5)*500;
-   let y=(Math.random()-0.5)*500;
-
-   r.animate([
-    {transform:"translate(0,0)",opacity:1},
-    {transform:`translate(${x}px,${y}px)`,opacity:0}
-   ],{duration:1800});
-
-   setTimeout(()=>r.remove(),1800);
- }
-}
-// ================= OBSESSION MODE =================
-// ---- Romantic Entry (music + roses) ----
-function startRomanticEntry(){
-
- const bgMusic = document.getElementById("bgMusic");
- const voice = document.getElementById("voiceNote");
-
- if(bgMusic){
-   bgMusic.volume = 0;
-   bgMusic.play().catch(()=>{});
-
-   let vol = 0;
-   let fade = setInterval(()=>{
-     if(vol >= 1){ clearInterval(fade); }
-     else{
-       vol += 0.05;
-       bgMusic.volume = vol;
-     }
-   },200);
- }
-
- // optional voice
- if(voice){
-   setTimeout(()=>voice.play().catch(()=>{}),1500);
- }
-
- // rose burst
- for(let i=0;i<25;i++){
-   let r=document.createElement("div");
-   r.innerText="🌹";
-   r.style.position="fixed";
-   r.style.left=window.innerWidth/2+"px";
-   r.style.top=window.innerHeight/2+"px";
-   r.style.fontSize=20+Math.random()*30+"px";
-   r.style.pointerEvents="none";
-   document.body.appendChild(r);
-
-   let x=(Math.random()-0.5)*500;
-   let y=(Math.random()-0.5)*500;
-
-   r.animate([
-    {transform:"translate(0,0)",opacity:1},
-    {transform:`translate(${x}px,${y}px)`,opacity:0}
-   ],{duration:1800});
-
-   setTimeout(()=>r.remove(),1800);
- }
-}
-
+ 
 </script>
 </body>
 </html>
