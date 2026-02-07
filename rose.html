@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Ultimate Rose Day 🌹</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:radial-gradient(circle at top,#132f2b,#020b0a);color:white;overflow-x:hidden;text-align:center;}
+section{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:30px;}
+h1{font-family:'Playfair Display',serif;color:#f5d9a6;}
+button{margin-top:20px;padding:12px 28px;border:none;border-radius:30px;background:#f5d9a6;font-weight:bold;cursor:pointer;transition:.2s;}
+button:hover{transform:scale(1.05);}
+input{padding:14px;width:260px;border-radius:30px;border:none;text-align:center;font-size:18px;margin-top:15px;}
+.hidden{display:none;}
+.glass{background:rgba(255,255,255,0.08);backdrop-filter:blur(12px);border-radius:25px;padding:30px;box-shadow:0 0 40px rgba(255,0,120,.3);}
+.rose{font-size:100px;animation:float 3s ease-in-out infinite;cursor:pointer;}
+@keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-20px)}100%{transform:translateY(0)}}
+#gardenContent {
+  position: relative;
+  z-index: 10;
+}
+.roseHint{
+  font-size:22px;
+  margin-top:10px;
+  color:#ffd1dc;
+  opacity:0;
+  transform:translateY(20px);
+  animation:popupHint 1.2s ease forwards, glowHint 2s infinite alternate;
+}
+
+.roseHint:hover{
+  transform:scale(1.1);
+  cursor:pointer;
+}
+
+@keyframes popupHint{
+  from{opacity:0; transform:translateY(40px) scale(0.8);}
+  to{opacity:1; transform:translateY(0) scale(1);}
+}
+
+@keyframes glowHint{
+  from{text-shadow:0 0 5px #ff7aa2;}
+  to{text-shadow:0 0 25px #ff2e6e,0 0 40px #ff2e6e;}
+}
+/* Keyboard */
+.keyboard{margin-top:20px;display:grid;grid-template-columns:repeat(7,1fr);gap:8px;max-width:350px;}
+.key{padding:10px;background:#ff4d6d;border-radius:8px;cursor:pointer;user-select:none;transition:.2s;}
+.key:hover{background:#ff758f;transform:scale(1.1);}
+
+/* Prompt messages */
+#prompt{margin-top:10px;color:#ffb6c1;min-height:22px;font-size:14px;}
+
+/* Challenge 1 */
+#game1{position:relative;width:100%;height:60vh;margin-top:20px;overflow:hidden;}
+#catchRose{position:absolute;font-size:60px;cursor:pointer;transition:0.2s;}
+.minion{position:absolute;font-size:40px;cursor:pointer;transition:0.2s;animation:bounce 1s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px);}}
+
+/* Memory Match */
+#game2 .card{display:inline-block;width:150px;height:150px;background:rgba(255,255,255,0.08);border-radius:20px;margin:15px;line-height:150px;font-size:16px;cursor:pointer;transition:.3s;}
+#game2 .card:hover{transform:scale(1.05);box-shadow:0 0 20px #ff9aa2;}
+#game2 .card.wrong{animation:shake .3s;}
+@keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-10px)}50%{transform:translateX(10px)}75%{transform:translateX(-10px)}100%{transform:translateX(0)}}
+
+/* Love Slider */
+#game3 input[type=range]{width:300px;margin-top:30px;}
+#sliderLabel{margin-top:10px;color:#ffb6c1;}
+
+/* Garden Roses */
+#garden .roseItem{display:inline-block;margin:10px;font-size:60px;cursor:pointer;transition:.3s;}
+#garden .roseItem:hover{transform:scale(1.2) rotate(10deg);}
+</style>
+</head>
+<body>
+
+<!-- Audio -->
+<audio loop id="bgMusic"><source src="romantic.mp3" type="audio/mpeg"></audio>
+<audio id="voiceNote"><source src="voice.mp3" type="audio/mpeg"></audio>
+<audio id="teaseSound"><source src="tease.mp3" type="audio/mpeg"></audio>
+<audio id="successSound"><source src="success.mp3" type="audio/mpeg"></audio>
+
+<!-- Keyboard Section -->
+<section id="lock">
+  <div class="glass">
+    <div class="rose">🌹</div>
+    <h1>Who is this?</h1>
+    <input id="nameInput" placeholder="Your Good Name Please!" readonly>
+    <div id="prompt"></div>
+    <div class="keyboard" id="keyboard"></div>
+    <button onclick="checkName()">Enter Rose Garden</button>
+  </div>
+</section>
+
+<!-- Challenge 1 -->
+<section id="challenge1" class="hidden">
+  <div class="glass">
+    <h1>Touch the Rose My Anjali!</h1>
+    <div id="game1">
+      <div id="catchRose">🌹</div>
+    </div>
+  </div>
+</section>
+
+<!-- Challenge 2 -->
+<section id="challenge2" class="hidden">
+  <div class="glass" id="game2">
+    <h1>Which moment do you remember most fondly? 🌹</h1>
+  </div>
+</section>
+
+<!-- Challenge 3 -->
+<section id="challenge3" class="hidden">
+  <div class="glass">
+    <h1>Drag to Open the Rose 🌹</h1>
+    <input type="range" min="0" max="100" value="0" id="loveSlider">
+    <div id="sliderLabel">Slide to 100% ❤️</div>
+  </div>
+</section>
+
+<!-- Interactive Garden -->
+<section id="garden" class="hidden">
+  <h1>Welcome to Our Rose Garden Ms. Anjali🌹</h1> 
+  </br>
+  <p id="roseHint" class="roseHint">🌹 Please touch upon each of the roses below 🌹</p>
+  <div id="heartContainer" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;"></div>
+  <div id="petalContainer" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;"></div>
+  
+  <div id="gardenContent">
+    <div class="roseItem" onclick="showMemory('🌹 A light, cold evening in the park \nTwo grown hearts sitting on a kids swing, talking like time had no rules for us.')">🌹</div>
+
+<div class="roseItem" onclick="showMemory('🌹 We broke every record of talking on the phone, ignoring reminders, dehydration, hunger and the world itself — as if nothing existed beyond our conversation.')">🌹</div>
+
+<div class="roseItem" onclick="showMemory('🌹 That first eye contact… and our silent challenge — who would get distracted first? Neither of us won. We just kept getting lost in each other.')">🌹</div>
+
+<div class="roseItem" onclick="showMemory('🌹 That cinematic moment at the station. I was running through the crowd just to find you. When I finally reached you, we shook hands like strangers, but it was actually a hug we had to disguise. For a second, everything felt still.')">🌹</div>
+
+<div class="roseItem" onclick="showMemory('🌹 That funny little discussion about me holding your purse. You insisted I carry it, I kept refusing like it was some big responsibility. We argued playfully for minutes over something so small, but secretly I liked it. In the end, I held it while you walked beside me smiling.')">🌹</div>
+  </div>
+  
+  <div id="messageBox" class="glass" style="margin-top:20px;"></div>
+  <button onclick="playVoice()">🎧 Click here</button>
+  <p id="countdown"></p>
+</section>
+
+<script>
+// ---- CONFIG ----
+const herName = "anjali";
+const bannedName = "vishal";
+const promptMsg = document.getElementById("prompt");
+
+// ---- Magic Keyboard ----
+const letters = "abcdefghijklmnopqrstuvwxyz".split("");
+const keyboard = document.getElementById("keyboard");
+const nameInput = document.getElementById("nameInput");
+
+function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
+function buildKeyboard() {
+  keyboard.innerHTML="";
+  shuffle(letters).forEach(l=>{
+    let k=document.createElement("div");
+    k.className="key"; k.innerText=l.toUpperCase();
+    k.onclick=()=>nameInput.value+=l;
+    keyboard.appendChild(k);
+  });
+  ["←","CLR"].forEach(sym=>{
+    let k=document.createElement("div");
+    k.className="key"; k.innerText=sym;
+    k.onclick=()=>{if(sym==="←"){nameInput.value=nameInput.value.slice(0,-1);} if(sym==="CLR"){nameInput.value="";}};
+    keyboard.appendChild(k);
+  });
+}
+buildKeyboard();
+
+// ---- Check Name ----
+function checkName(){
+  const val=nameInput.value.toLowerCase().trim();
+  if(val===bannedName){promptMsg.innerText="😏 This name doesn't exist! Try your own magic.";document.getElementById("teaseSound").play();nameInput.value="";return;}
+  if(val===herName){ startRomanticEntry();   // 🔥 music only on correct name
+
+ document.getElementById("lock").classList.add("hidden");
+ startChallenge1();}
+  else{const msgs=["The rose is only for one 🌹Nope, only one name 💔","Hmm… not quite 😌","Nope, only one name 💔","Try again, pick the correct name 😏"];promptMsg.innerText=msgs[Math.floor(Math.random()*msgs.length)];document.getElementById("teaseSound").play();nameInput.value="";}
+}
+
+// ---- Challenge 1: Catch the Rose ----
+const game1 = document.getElementById("game1");
+const rose = document.getElementById("catchRose");
+function startChallenge1(){
+  document.getElementById("challenge1").classList.remove("hidden");
+  moveRoseRandom();
+  setInterval(moveRoseRandom,1500);
+  setInterval(spawnMinion,2000);
+}
+function moveRoseRandom(){rose.style.top=Math.random()*50+"%";rose.style.left=Math.random()*70+"%";}
+rose.onclick=function(){document.getElementById("successSound").play();document.getElementById("challenge1").classList.add("hidden");startChallenge2();}
+function spawnMinion(){
+  let m=document.createElement("div"); m.className="minion"; m.innerText="👾";
+  m.style.top=Math.random()*50+"%"; m.style.left=Math.random()*70+"%";
+  game1.appendChild(m);
+  setTimeout(()=>m.remove(),1800);
+  m.onclick=()=>{document.getElementById("teaseSound").play();promptMsg.innerText="Haha minions are laughing at you! 😏";}
+}
+
+// ---- Challenge 2: Memory Match ----
+const game2=document.getElementById("game2");
+const memories=["First Train","First Bus","First Auto"];
+function startChallenge2(){
+  document.getElementById("challenge2").classList.remove("hidden");
+  game2.innerHTML="<h1>Pick one box which contains our first memory! 🌹</h1>";
+  shuffle(memories).forEach(mem=>{
+    let c=document.createElement("div"); c.className="card"; c.innerText=mem;
+    c.onclick=()=>{if(mem==="First Train"){document.getElementById("successSound").play();document.getElementById("challenge2").classList.add("hidden");startChallenge3();}
+                  else{c.classList.add("wrong");document.getElementById("teaseSound").play();setTimeout(()=>c.classList.remove("wrong"),300);}};
+    game2.appendChild(c);
+  });
+}
+
+// ---- Challenge 3: Love Slider ----
+function startChallenge3(){
+  document.getElementById("challenge3").classList.remove("hidden");
+  const slider=document.getElementById("loveSlider"); const label=document.getElementById("sliderLabel");
+  slider.oninput = () => {
+    label.innerText = `❤️ ${slider.value}%`;
+    if (slider.value == 100) {
+        document.getElementById("successSound").play();
+        document.getElementById("challenge3").classList.add("hidden");
+        unlockGarden();     // garden opens
+        grandFinale();      // trigger cinematic petal & sparkle burst
+    }
+}
+}
+
+// ---- Grand Finale Burst ----
+function grandFinale(){
+  const totalParticles = 100;
+  
+  // Petal Burst
+  for(let i=0;i<totalParticles;i++){
+    let petal = document.createElement("div");
+    petal.innerText = "🌸";
+    petal.style.position = "absolute";
+    petal.style.left = window.innerWidth/2 + (Math.random()*200-100) + "px";
+    petal.style.top = window.innerHeight/2 + (Math.random()*200-100) + "px";
+    petal.style.fontSize = 15 + Math.random()*20 + "px";
+    petal.style.opacity = 0.8;
+    petal.style.pointerEvents = "none";
+    document.body.appendChild(petal);
+
+    let angle = Math.random()*2*Math.PI;
+    let speed = 2 + Math.random()*3;
+    let dx = Math.cos(angle)*speed;
+    let dy = Math.sin(angle)*speed;
+
+    function animate(){
+      let top = parseFloat(petal.style.top);
+      let left = parseFloat(petal.style.left);
+      if(top>window.innerHeight+50 || left<0 || left>window.innerWidth+50){petal.remove(); return;}
+      petal.style.top = (top+dy) + "px";
+      petal.style.left = (left+dx) + "px";
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+
+  // Sparkle Burst
+  for(let i=0;i<50;i++){
+    let sparkle = document.createElement("div");
+    sparkle.innerText = "✨";
+    sparkle.style.position = "absolute";
+    sparkle.style.left = window.innerWidth/2 + (Math.random()*200-100) + "px";
+    sparkle.style.top = window.innerHeight/2 + (Math.random()*200-100) + "px";
+    sparkle.style.fontSize = 12 + Math.random()*15 + "px";
+    sparkle.style.opacity = 1;
+    sparkle.style.pointerEvents = "none";
+    sparkle.style.transition = 'transform 1s, opacity 1s';
+    document.body.appendChild(sparkle);
+
+    let angle = Math.random()*2*Math.PI;
+    let speed = 3 + Math.random()*3;
+    let dx = Math.cos(angle)*speed;
+    let dy = Math.sin(angle)*speed;
+
+    setTimeout(()=>{
+      sparkle.style.transform = `translate(${dx*50}px, ${dy*50}px) scale(0.5)`;
+      sparkle.style.opacity = 0;
+    },10);
+
+    setTimeout(()=>{sparkle.remove();},1000);
+  }
+
+  // Play success sound for finale
+  document.getElementById("successSound").play();
+}
+// ---- Interactive Garden ----
+function unlockGarden(){
+  document.getElementById("garden").classList.remove("hidden");
+      startRomanticEntry();
+  setTimeout(()=>{
+    const hint = document.getElementById("roseHint");
+    hint.style.opacity = "1";
+  },1500);
+}
+
+function showMemory(msg){document.getElementById("messageBox").innerText=msg;}
+function playVoice(){document.getElementById("voiceNote").play();}
+
+// ---- Countdown ----
+const meetDate=new Date("2026-02-14");
+setInterval(()=>{
+  let diff=meetDate-new Date();
+  let days=Math.floor(diff/(1000*60*60*24));
+  document.getElementById("countdown").innerText="⏳ Days until I see you: "+days;
+},1000);
+
+// ---- Garden Particles ----
+const heartContainer=document.getElementById("heartContainer");
+const petalContainer=document.getElementById("petalContainer");
+function createHeart(){let heart=document.createElement("div");heart.innerText="💖";heart.style.position="absolute";heart.style.left=Math.random()*window.innerWidth+"px";heart.style.top=window.innerHeight+"px";heart.style.fontSize=20+Math.random()*20+"px";heart.style.opacity=0.7+Math.random()*0.3;heart.style.pointerEvents="none";heartContainer.appendChild(heart);let speed=1+Math.random()*2;function animate(){let top=parseFloat(heart.style.top);if(top<-50){heart.remove();return;}heart.style.top=(top-speed)+"px";heart.style.left=(parseFloat(heart.style.left)+Math.sin(top/50)*2)+"px";requestAnimationFrame(animate);}animate();}
+setInterval(createHeart,500);
+function createPetal(){let petal=document.createElement("div");petal.innerText="🌸";petal.style.position="absolute";petal.style.left=Math.random()*window.innerWidth+"px";petal.style.top=-50+"px";petal.style.fontSize=15+Math.random()*15+"px";petal.style.opacity=0.6+Math.random()*0.4;petal.style.pointerEvents="none";petalContainer.appendChild(petal);let speed=1+Math.random()*2;function animate(){let top=parseFloat(petal.style.top);if(top>window.innerHeight+50){petal.remove();return;}petal.style.top=(top+speed)+"px";petal.style.left=(parseFloat(petal.style.left)+Math.sin(top/30)*3)+"px";requestAnimationFrame(animate);}animate();}
+setInterval(createPetal,300);
+
+// ---- Sparkle Trail ----
+document.addEventListener('mousemove', function(e){
+  const sparkle=document.createElement('div'); sparkle.innerText="✨";
+  sparkle.style.position='absolute'; sparkle.style.left=e.pageX + (Math.random()*10-5)+'px';
+  sparkle.style.top=e.pageY + (Math.random()*10-5)+'px';
+  sparkle.style.fontSize=12+Math.random()*12+'px';
+  sparkle.style.opacity=0.8; sparkle.style.pointerEvents='none';
+  sparkle.style.transition='transform 0.5s, opacity 0.5s';
+  document.body.appendChild(sparkle);
+  setTimeout(()=>{sparkle.style.transform='translateY(-30px) scale(0.5)'; sparkle.style.opacity=0;},10);
+  setTimeout(()=>{sparkle.remove();},500);
+});
+ // ---- Romantic Entry (music only after correct name) ----
+function startRomanticEntry(){
+
+ const bgMusic = document.getElementById("bgMusic");
+ const voice = document.getElementById("voiceNote");
+
+ // smooth volume fade
+ bgMusic.volume = 0;
+ bgMusic.play().catch(()=>{});
+
+ let vol = 0;
+ let fade = setInterval(()=>{
+   if(vol >= 1){
+     clearInterval(fade);
+   } else{
+     vol += 0.05;
+     bgMusic.volume = vol;
+   }
+ },200);
+
+ // optional soft voice start
+ if(voice){
+   setTimeout(()=>voice.play().catch(()=>{}),1500);
+ }
+
+ // small rose burst when she enters correct name
+ for(let i=0;i<25;i++){
+   let r=document.createElement("div");
+   r.innerText="🌹";
+   r.style.position="fixed";
+   r.style.left=window.innerWidth/2+"px";
+   r.style.top=window.innerHeight/2+"px";
+   r.style.fontSize=20+Math.random()*30+"px";
+   r.style.pointerEvents="none";
+   document.body.appendChild(r);
+
+   let x=(Math.random()-0.5)*500;
+   let y=(Math.random()-0.5)*500;
+
+   r.animate([
+    {transform:"translate(0,0)",opacity:1},
+    {transform:`translate(${x}px,${y}px)`,opacity:0}
+   ],{duration:1800});
+
+   setTimeout(()=>r.remove(),1800);
+ }
+}
+// ================= OBSESSION MODE =================
+// ---- Romantic Entry (music + roses) ----
+function startRomanticEntry(){
+
+ const bgMusic = document.getElementById("bgMusic");
+ const voice = document.getElementById("voiceNote");
+
+ if(bgMusic){
+   bgMusic.volume = 0;
+   bgMusic.play().catch(()=>{});
+
+   let vol = 0;
+   let fade = setInterval(()=>{
+     if(vol >= 1){ clearInterval(fade); }
+     else{
+       vol += 0.05;
+       bgMusic.volume = vol;
+     }
+   },200);
+ }
+
+ // optional voice
+ if(voice){
+   setTimeout(()=>voice.play().catch(()=>{}),1500);
+ }
+
+ // rose burst
+ for(let i=0;i<25;i++){
+   let r=document.createElement("div");
+   r.innerText="🌹";
+   r.style.position="fixed";
+   r.style.left=window.innerWidth/2+"px";
+   r.style.top=window.innerHeight/2+"px";
+   r.style.fontSize=20+Math.random()*30+"px";
+   r.style.pointerEvents="none";
+   document.body.appendChild(r);
+
+   let x=(Math.random()-0.5)*500;
+   let y=(Math.random()-0.5)*500;
+
+   r.animate([
+    {transform:"translate(0,0)",opacity:1},
+    {transform:`translate(${x}px,${y}px)`,opacity:0}
+   ],{duration:1800});
+
+   setTimeout(()=>r.remove(),1800);
+ }
+}
+
+</script>
+</body>
+</html>
