@@ -268,7 +268,7 @@ function checkName(){
   if(val===herName){ document.getElementById("bgMusic").play().catch(()=>{});
  document.getElementById("lock").classList.add("hidden");
  startChallenge1();}
-  else{const msgs=["The rose is only for one 🌹Nope, only one name 💔","Hmm… not quite 😌","Nope, only one name 💔","Try again, pick the correct name 😏"];promptMsg.innerText=msgs[Math.floor(Math.random()*msgs.length)];document.getElementById("teaseSound").play();nameInput.value="";}
+  else{const msgs=["The rose is only for one 🌹Nope", "only one name 💔","Hmm… not quite 😌","Nope, only one name 💔","Try again, pick the correct name 😏"];promptMsg.innerText=msgs[Math.floor(Math.random()*msgs.length)];document.getElementById("teaseSound").play();nameInput.value="";}
 }
 
 // ---- Challenge 1: Catch the Rose ----
@@ -485,6 +485,7 @@ document.addEventListener('mousemove', function(e){
 </script>
 </body>
 </html>
+
 
 
 
