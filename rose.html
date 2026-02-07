@@ -11,8 +11,8 @@ body{
 font-family:'Inter',sans-serif;
 
 background:
-linear-gradient(rgba(0,0,0,0.25),rgba(0,0,0,0.25)),
-url("bg-rose.jpg");
+linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),
+url("rose.jpg");
 
 background-size:cover;
 background-position:center center;
@@ -24,18 +24,6 @@ background-repeat:no-repeat;
 color:white;
 overflow-x:hidden;
 text-align:center;
-}
-
-
-/* ===== MOBILE BACKGROUND FIX ===== */
-@media (max-width:768px){
-
-body{
-background-size:cover;
-background-position:top center;   /* shows top portion clearly */
-background-attachment:scroll;     /* prevents compression */
-}
-
 }
 
 
@@ -76,61 +64,9 @@ input{padding:14px;width:260px;border-radius:30px;border:none;text-align:center;
   to{text-shadow:0 0 25px #ff2e6e,0 0 40px #ff2e6e;}
 }
 /* Keyboard */
-/* ===== KEYBOARD CONTAINER (ULTRA GLASS) ===== */
-.keyboard{
-margin-top:20px;
-display:grid;
-grid-template-columns:repeat(7,1fr);
-gap:10px;
-max-width:420px;
-margin-left:auto;
-margin-right:auto;
-
-/* fully transparent glass */
-background:rgba(0,0,0,0.15);     /* very light so image visible */
-backdrop-filter:blur(6px);
--webkit-backdrop-filter:blur(6px);
-
-padding:18px;
-border-radius:22px;
-
-/* soft romantic glow */
-box-shadow:0 0 30px rgba(255,105,180,0.25),
-inset 0 0 25px rgba(255,255,255,0.08);
-}
-
-/* ===== INDIVIDUAL KEYS ===== */
-.key{
-padding:12px 8px;
-background:rgba(255,255,255,0.12);   /* transparent */
-border-radius:12px;
-cursor:pointer;
-user-select:none;
-transition:0.25s;
-color:white;
-font-weight:bold;
-font-size:15px;
-text-align:center;
-
-/* glass feel */
-backdrop-filter:blur(3px);
--webkit-backdrop-filter:blur(3px);
-
-border:1px solid rgba(255,255,255,0.15);
-}
-
-/* ===== HOVER EFFECT ===== */
-.key:hover{
-background:rgba(255,255,255,0.28);
-transform:scale(1.12);
-box-shadow:0 0 15px rgba(255,182,193,0.6);
-}
-
-/* ===== CLICK EFFECT ===== */
-.key:active{
-transform:scale(0.95);
-background:rgba(255,182,193,0.5);
-}
+.keyboard{margin-top:20px;display:grid;grid-template-columns:repeat(7,1fr);gap:8px;max-width:350px;}
+.key{padding:10px;background:#ff4d6d;border-radius:8px;cursor:pointer;user-select:none;transition:.2s;}
+.key:hover{background:#ff758f;transform:scale(1.1);}
 
 /* Prompt messages */
 #prompt{margin-top:10px;color:#ffb6c1;min-height:22px;font-size:14px;}
@@ -154,48 +90,35 @@ background:rgba(255,182,193,0.5);
 /* Garden Roses */
 #garden .roseItem{display:inline-block;margin:10px;font-size:60px;cursor:pointer;transition:.3s;}
 #garden .roseItem:hover{transform:scale(1.2) rotate(10deg);}
-/* ===== ATTENTION ROSES ANIMATION ===== */
-#gardenContent .roseItem{
-display:inline-block;
-margin:18px;
-font-size:65px;
-cursor:pointer;
-transition:0.4s;
-position:relative;
 
-/* glow */
-animation:roseFloat 3s ease-in-out infinite,
-roseGlow 2.5s infinite alternate;
+/* cinematic hint text */
+.roseHint{
+  font-size:26px;
+  margin-top:10px;
+  color:#ffd1dc;
+  opacity:0;
+  transform:scale(0.8);
+  text-shadow:0 0 10px #ff4d88;
 }
 
-/* floating up-down */
-@keyframes roseFloat{
-0%{transform:translateY(0px);}
-50%{transform:translateY(-18px);}
-100%{transform:translateY(0px);}
+/* arrow pointing to roses */
+#roseArrow{
+  font-size:40px;
+  color:#ff7aa2;
+  opacity:0;
+  animation:arrowBounce 1s infinite;
 }
 
-/* romantic glow */
-@keyframes roseGlow{
-from{filter:drop-shadow(0 0 5px #ff4d6d);}
-to{filter:drop-shadow(0 0 22px #ff99ac);}
+@keyframes arrowBounce{
+  0%{transform:translateY(0);}
+  50%{transform:translateY(15px);}
+  100%{transform:translateY(0);}
 }
 
-/* hover magic */
-#gardenContent .roseItem:hover{
-transform:scale(1.35) rotate(8deg);
-filter:drop-shadow(0 0 25px #ff2e6e);
-}
-
-/* attention pulse wave */
-#gardenContent{
-animation:roseWave 4s infinite ease-in-out;
-}
-
-@keyframes roseWave{
-0%{transform:translateY(0px);}
-50%{transform:translateY(-6px);}
-100%{transform:translateY(0px);}
+/* glow animation */
+@keyframes romanticGlow{
+  from{text-shadow:0 0 10px #ff4d88;}
+  to{text-shadow:0 0 35px #ff0055,0 0 60px #ff2e6e;}
 }
 
 </style>
@@ -203,6 +126,8 @@ animation:roseWave 4s infinite ease-in-out;
 <body>
 
 <!-- Audio -->
+<audio id="aiVoice"><source src="anjali.mp3"></audio>
+<audio id="hintVoice"> <source src="hint.mp3" type="audio/mpeg"></audio>
 <audio loop id="bgMusic"><source src="romantic.mp3" type="audio/mpeg"></audio>
 <audio id="voiceNote"><source src="voice.mp3" type="audio/mpeg"></audio>
 <audio id="teaseSound"><source src="tease.mp3" type="audio/mpeg"></audio>
@@ -250,20 +175,25 @@ animation:roseWave 4s infinite ease-in-out;
 <section id="garden" class="hidden">
   <h1>Welcome to Our Rose Garden Ms. Anjali🌹</h1> 
   </br>
+  <div style="margin:20px">
+❤️ Learn by heart: <span id="loveMeter">0</span>%
+</div>
   <p id="roseHint" class="roseHint">🌹 Please touch upon each of the roses below 🌹</p>
+  <div id="roseArrow">⬇</div>
   <div id="heartContainer" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;"></div>
   <div id="petalContainer" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;"></div>
   
+
   <div id="gardenContent">
-    <div class="roseItem" onclick="showMemory('🌹 Remember? A light, cold evening in the park \nTwo grown hearts sitting on a kids swing, talking like time had no rules for us.')">🌹</div>
+    <div class="roseItem" onclick="showMemory('🌹 Remember! A light, cold evening in the park \nTwo grown hearts sitting on a kids swing, talking like time had no rules for us.'); increaseLove();">🌹</div>
 
-<div class="roseItem" onclick="showMemory('🌹 After a week, We broke every record of talking on the phone, ignoring reminders, dehydration, hunger and the world itself — as if nothing existed beyond our conversation.')">🌹</div>
+<div class="roseItem" onclick="showMemory('🌹 We broke every record of talking on the phone, ignoring reminders, dehydration, hunger and the world itself — as if nothing existed beyond our conversation.'); increaseLove();">🌹</div>
 
-<div class="roseItem" onclick="showMemory('🌹 That first eye contact… and our silent challenge — who would get distracted first? Neither of us won. We just kept getting lost in each other.')">🌹</div>
+<div class="roseItem" onclick="showMemory('🌹 That first eye contact… and our silent challenge — who would get distracted first? Neither of us won. We just kept getting lost in each other.'); increaseLove();">🌹</div>
 
-<div class="roseItem" onclick="showMemory('🌹 That cinematic moment at the station. I was running through the crowd just to find you. When I finally reached you, we shook hands like strangers, but it was actually a hug we had to disguise. For a second, everything felt still.')">🌹</div>
+<div class="roseItem" onclick="showMemory('🌹 That cinematic moment at the station. I was running through the crowd just to find you. When I finally reached you, we shook hands like strangers, but it was actually a hug we had to disguise. For a second, everything felt still.'); increaseLove();">🌹</div>
 
-<div class="roseItem" onclick="showMemory('🌹 That funny little discussion about me holding your purse. You insisted I carry it, I kept refusing like it was some big responsibility. We argued playfully for minutes over something so small, but secretly I liked it. In the end, I held it while you walked beside me smiling.')">🌹</div>
+<div class="roseItem" onclick="showMemory('🌹 That funny little discussion about me holding your purse. You insisted I carry it, I kept refusing like it was some big responsibility. We argued playfully for minutes over something so small, but secretly I liked it. In the end, I held it while you walked beside me smiling.'); increaseLove();">🌹</div>
   </div>
   
   <div id="messageBox" class="glass" style="margin-top:20px;"></div>
@@ -272,8 +202,41 @@ animation:roseWave 4s infinite ease-in-out;
 </section>
 
 <script>
+
+let clickCount=0;
+let startTime=Date.now();
+
+let love=0;
+function increaseLove(){
+clickCount++;
+
+if(clickCount>=5 && Date.now()-startTime<8000){
+secretEnding();
+}
+
+if(love<100){
+love+=Math.floor(Math.random()*8)+3;
+if(love>100) love=100;
+document.getElementById("loveMeter").innerText=love;
+}
+}
+
+function secretEnding(){
+let s=document.createElement("div");
+s.innerText="You are impatient… I like that. ❤️";
+s.style.position="fixed";
+s.style.top="40%";
+s.style.width="100%";
+s.style.fontSize="40px";
+s.style.color="#ff4d88";
+s.style.textShadow="0 0 20px #ff2e6e";
+document.body.appendChild(s);
+
+document.getElementById("successSound").play();
+}
+
 // ---- CONFIG ----
-const herName = "anjali";
+const herName = "a";
 const bannedName = "vishal";
 const promptMsg = document.getElementById("prompt");
 
@@ -305,7 +268,7 @@ function checkName(){
   if(val===herName){ document.getElementById("bgMusic").play().catch(()=>{});
  document.getElementById("lock").classList.add("hidden");
  startChallenge1();}
-  else{const msgs=["The rose is only for one 🌹", Nope, only one name 💔","Hmm… not quite 😌","Nope, only one name 💔","Try again, pick the correct name 😏"];promptMsg.innerText=msgs[Math.floor(Math.random()*msgs.length)];document.getElementById("teaseSound").play();nameInput.value="";}
+  else{const msgs=["The rose is only for one 🌹Nope, only one name 💔","Hmm… not quite 😌","Nope, only one name 💔","Try again, pick the correct name 😏"];promptMsg.innerText=msgs[Math.floor(Math.random()*msgs.length)];document.getElementById("teaseSound").play();nameInput.value="";}
 }
 
 // ---- Challenge 1: Catch the Rose ----
@@ -419,13 +382,59 @@ function grandFinale(){
 }
 // ---- Interactive Garden ----
 function unlockGarden(){
+   setTimeout(()=>{
+document.getElementById("aiVoice").play().catch(()=>{});
+},200);
   document.getElementById("garden").classList.remove("hidden");
 
+  // cinematic delay
   setTimeout(()=>{
     const hint = document.getElementById("roseHint");
-    hint.style.opacity = "1";
-  },1500);
+    const arrow = document.getElementById("roseArrow");
+
+    hint.style.opacity="1";
+    hint.style.transform="scale(1)";
+    hint.style.animation="romanticGlow 2s infinite alternate";
+
+    arrow.style.opacity="1";
+
+    // sparkle burst
+    for(let i=0;i<20;i++){
+      let s=document.createElement("div");
+      s.innerText="✨";
+      s.style.position="absolute";
+      s.style.left=(window.innerWidth/2 + (Math.random()*200-100))+"px";
+      s.style.top=(window.innerHeight/2 - 100 + (Math.random()*100-50))+"px";
+      s.style.fontSize="20px";
+      s.style.pointerEvents="none";
+      document.body.appendChild(s);
+
+      setTimeout(()=>{s.style.transform="translateY(-80px)";s.style.opacity=0;},50);
+      setTimeout(()=>s.remove(),1200);
+    }
+    
+    setTimeout(()=>{
+let j=document.createElement("div");
+j.innerText="I love you my Queen more and more!";
+j.style.position="fixed";
+j.style.bottom="20px";
+j.style.width="100%";
+j.style.fontSize="18px";
+j.style.color="#ff9ac6";
+j.style.opacity=0;
+j.style.transition="1.5s";
+document.body.appendChild(j);
+
+setTimeout(()=>j.style.opacity=1,200);
+},20000);
+
+    // play whisper voice (optional)
+    const v=document.getElementById("hintVoice");
+    if(v){v.play().catch(()=>{});}
+
+  },1800);
 }
+
 
 function showMemory(msg){document.getElementById("messageBox").innerText=msg;}
 function playVoice(){document.getElementById("voiceNote").play();}
@@ -458,33 +467,21 @@ document.addEventListener('mousemove', function(e){
   setTimeout(()=>{sparkle.style.transform='translateY(-30px) scale(0.5)'; sparkle.style.opacity=0;},10);
   setTimeout(()=>{sparkle.remove();},500);
 });
- // ===== Dynamic moving roses to attract attention =====
-function animateGardenRoses(){
-  const roses = document.querySelectorAll("#gardenContent .roseItem");
+ const bgMusic = document.getElementById('bgMusic');
+  const voiceNote = document.getElementById('voiceNote');
 
-  roses.forEach(r=>{
-    setInterval(()=>{
-      let x = (Math.random()*20 - 10);
-      let y = (Math.random()*20 - 10);
-      r.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
-    },2000);
+  // Start background music
+  bgMusic.play();
+
+  // Pause bgMusic when voiceNote plays
+  voiceNote.addEventListener('play', () => {
+    bgMusic.pause();
   });
-}
 
-// start when garden opens
-function unlockGarden(){
-  document.getElementById("garden").classList.remove("hidden");
-  startRomanticEntry();
-
-  setTimeout(()=>{
-    const hint = document.getElementById("roseHint");
-    hint.style.opacity = "1";
-  },1500);
-
-  animateGardenRoses(); // 🔥 start rose motion
-}
-
+  // Resume bgMusic when voiceNote ends
+  voiceNote.addEventListener('ended', () => {
+    bgMusic.play();
+  });
 </script>
 </body>
 </html>
-
