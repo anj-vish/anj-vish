@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Cosmic Proposal 🌌💖</title>
+<style>
+body{margin:0;padding:0;overflow:hidden;font-family:sans-serif;background:#0b0c2a;}
+canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;}
+section{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:10;}
+h1{color:white;text-shadow:0 0 15px #ff77aa;margin-bottom:1rem;}
+button{padding:1rem 2rem;border:none;border-radius:25px;background:#ff77aa;color:white;font-size:1.2rem;cursor:pointer;transition:.2s;}
+button:hover{transform:scale(1.1);}
+#typewriter{font-size:1.8rem;margin-bottom:1rem;color:#ffdde1;text-shadow:0 0 8px #ff77aa;}
+.hidden{display:none;}
+.constellation-star{display:inline-block;margin:5px;padding:12px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;font-weight:bold;color:white;font-size:18px;transition:.3s;}
+.constellation-star:hover{background:#ff77aa;transform:scale(1.3);}
+#finalMessage{font-size:2rem;margin-top:2rem;}
+#yesNoButtons{margin-top:20px;}
+</style>
+</head>
+<body>
+
+<canvas id="spaceCanvas"></canvas>
+
+<section id="landing">
+  <div id="typewriter"></div>
+  <button id="startBtn">Click to Begin ✨</button>
+</section>
+
+<section id="nameSection" class="hidden">
+  <h1>Connect the stars to form your special initials 🌟</h1>
+  <div id="nameContainer"></div>
+  <div id="prompt"></div>
+  <button onclick="checkName()">Submit Constellation</button>
+</section>
+
+<section id="cosmicSection" class="hidden">
+  <h1>Our Cosmic Lily Sky 🌌🌸</h1>
+  <div id="finalMessage"></div>
+  <div id="yesNoButtons" class="hidden">
+    <button onclick="finalYes()">YES 💖</button>
+    <button onclick="finalNo()">NO 💔</button>
+  </div>
+</section>
+
+<audio id="bgMusic" loop>
+  <source src="romantic.mp3" type="audio/mpeg">
+</audio>
+<audio id="chime">
+  <source src="chime.mp3" type="audio/mpeg">
+</audio>
+<audio id="voiceNote">
+  <source src="voice.mp3" type="audio/mpeg">
+</audio>
+<audio id="proposalMusic">
+  <source src="propose.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// ---- COSMIC NEBULA CANVAS ----
+const canvas = document.getElementById('spaceCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+for(let i=0;i<200;i++){
+  stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5+0.5,speed:Math.random()*0.5});
+}
+
+function animateStars(){
+  ctx.fillStyle = "#0b0c2a";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle="#ffffff";
+    ctx.fill();
+    s.y -= s.speed;
+    if(s.y<0) s.y=canvas.height;
+  });
+  requestAnimationFrame(animateStars);
+}
+animateStars();
+
+// ---- FLOATING LILIES ----
+function createLily(){
+  let lily = document.createElement('div'); lily.innerText='🌸';
+  lily.style.position='absolute';
+  lily.style.left=Math.random()*window.innerWidth+'px';
+  lily.style.top=window.innerHeight+'px';
+  lily.style.fontSize=(20+Math.random()*30)+'px';
+  document.body.appendChild(lily);
+  let speed=1+Math.random()*2;
+  function fall(){
+    lily.style.top=parseFloat(lily.style.top)-speed+'px';
+    if(parseFloat(lily.style.top)<-50){lily.remove(); return;}
+    requestAnimationFrame(fall);
+  }
+  fall();
+}
+setInterval(createLily,400);
+
+// ---- TYPEWRITER LANDING ----
+const typewriter=document.getElementById('typewriter');
+let introText="To the one who lights up my universe… 🌌";
+let i=0;
+function typeWriter(){if(i<introText.length){typewriter.innerHTML+=introText.charAt(i);i++;setTimeout(typeWriter,80);}}
+typeWriter();
+
+// ---- START BUTTON ----
+document.getElementById('startBtn').onclick=function(){
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('nameSection').classList.remove('hidden');
+  buildConstellation();
+  document.getElementById('bgMusic').play().catch(()=>{});
+}
+
+// ---- CONSTELLATION PUZZLE ----
+const herInitials="anjali"; 
+let nameInput="";
+const nameContainer=document.getElementById('nameContainer');
+const prompt=document.getElementById('prompt');
+
+function buildConstellation(){
+  const letters="abcdefghijklmnopqrstuvwxyz".split("");
+  nameContainer.innerHTML="";
+  letters.forEach(l=>{
+    let star=document.createElement('div'); star.className='constellation-star'; star.innerText=l.toUpperCase();
+    star.onclick=function(){nameInput+=l;prompt.innerText=nameInput; sparkEffect(star);};
+    nameContainer.appendChild(star);
+  });
+}
+
+function sparkEffect(el){
+  for(let i=0;i<8;i++){
+    let spark=document.createElement('div'); spark.innerText="✨";
+    spark.style.position='absolute';
+    spark.style.left=el.offsetLeft + Math.random()*20 + "px";
+    spark.style.top=el.offsetTop + Math.random()*20 + "px";
+    spark.style.fontSize=(5+Math.random()*10)+'px';
+    document.body.appendChild(spark);
+    setTimeout(()=>spark.remove(),800);
+  }
+}
+
+function checkName(){
+  if(nameInput.toLowerCase()===herInitials){
+    document.getElementById('nameSection').classList.add('hidden');
+    startCosmicSky();
+  } else{
+    prompt.innerText="⭐ Try connecting the stars correctly! ⭐"; nameInput="";
+  }
+}
+
+// ---- COSMIC SKY & PROPOSAL ----
+function startCosmicSky(){
+  document.getElementById('cosmicSection').classList.remove('hidden');
+  document.getElementById('voiceNote').play().catch(()=>{});
+  const finalMessage=document.getElementById('finalMessage');
+  let proposalText="Will you be mine forever? 💍";
+  let idx=0;
+  const interval=setInterval(()=>{
+    if(idx<proposalText.length){
+      finalMessage.innerHTML+=proposalText[idx];
+      idx++;
+    } else{
+      clearInterval(interval);
+      document.getElementById('yesNoButtons').classList.remove('hidden');
+      cosmicExplosions();
+    }
+  },100);
+}
+
+// ---- COSMIC EXPLOSIONS & SHOOTING STARS ----
+function cosmicExplosions(){
+  for(let i=0;i<150;i++){
+    let s=document.createElement("div"); s.innerText="✨";
+    s.style.position="absolute";
+    s.style.left=Math.random()*window.innerWidth+"px";
+    s.style.top=Math.random()*window.innerHeight+"px";
+    s.style.fontSize=(10+Math.random()*25)+"px";
+    document.body.appendChild(s);
+    let dx=Math.random()*6-3; let dy=Math.random()*6-3; let opacity=1;
+    (function animate(){
+      let x=parseFloat(s.style.left); let y=parseFloat(s.style.top);
+      s.style.left=x+dx+"px"; s.style.top=y+dy+"px";
+      opacity-=0.007; s.style.opacity=opacity;
+      if(opacity<=0){s.remove(); return;}
+      requestAnimationFrame(animate);
+    })();
+  }
+}
+
+// ---- CURSOR STAR TRAIL ----
+document.addEventListener('mousemove', e=>{
+  let t=document.createElement('div'); t.innerText="✨";
+  t.style.position='absolute'; t.style.left=e.pageX+"px"; t.style.top=e.pageY+"px";
+  t.style.fontSize=(5+Math.random()*15)+'px'; t.style.opacity=0.8;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),500);
+});
+
+// ---- FINAL YES / NO ----
+function finalYes(){
+  document.getElementById('finalMessage').innerHTML="<br><br>💖 You said YES 💖<br>✨ The universe is ours my Queen ✨";
+  document.getElementById('yesNoButtons').classList.add('hidden');
+
+  document.getElementById('chime').play().catch(()=>{});
+  document.getElementById('proposalMusic').play().catch(()=>{});
+
+  cosmicExplosions(); 
+  cosmicExplosions();
+  showInitialsNebula("An+Vi Forever!");
+}
+
+
+function finalNo(){
+  document.getElementById('finalMessage').innerHTML="<br><br>💔 It's okay, the stars still shine for us ✨";
+  document.getElementById('yesNoButtons').classList.add('hidden');
+}
+
+// ---- PARTICLE INITIALS NEBULA ----
+function showInitialsNebula(text){
+  const particles=[];
+  const centerX=canvas.width/2, centerY=canvas.height/2;
+  const fontSize=120;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  
+  // Draw text offscreen to get pixel data
+  const tempCanvas=document.createElement('canvas');
+  tempCanvas.width=canvas.width; tempCanvas.height=canvas.height;
+  const tctx=tempCanvas.getContext('2d');
+  tctx.font=`bold ${fontSize}px sans-serif`;
+  tctx.fillStyle="white";
+  tctx.fillText(text,centerX-(text.length*fontSize/4),centerY);
+  const imgData=tctx.getImageData(0,0,tempCanvas.width,tempCanvas.height);
+
+  for(let y=0;y<imgData.height;y+=6){
+    for(let x=0;x<imgData.width;x+=6){
+      const idx=(y*imgData.width+x)*4;
+      if(imgData.data[idx+3]>128){ // alpha check
+        particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,targetX:x,targetY:y,r:Math.random()*2+1,dx:0,dy:0});
+      }
+    }
+  }
+
+  function animateParticles(){
+    ctx.fillStyle="rgba(11,12,42,0.2)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.dx+=(p.targetX-p.x)*0.02;
+      p.dy+=(p.targetY-p.y)*0.02;
+      p.x+=p.dx; p.y+=p.dy;
+      p.dx*=0.85; p.dy*=0.85;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle="#ff77aa";
+      ctx.fill();
+    });
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+}
+
+
+
+
+</script>
+</body>
+</html>
