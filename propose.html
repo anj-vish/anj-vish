@@ -29,7 +29,7 @@ button:hover{transform:scale(1.1);}
 </section>
 
 <section id="nameSection" class="hidden">
-  <h1>Connect the stars to form your special initials 🌟</h1>
+  <h1>Connect the stars to form your special name 🌟</h1>
   <div id="nameContainer"></div>
   <div id="prompt"></div>
   <button onclick="checkName()">Submit Constellation</button>
@@ -204,11 +204,17 @@ document.addEventListener('mousemove', e=>{
 
 // ---- FINAL YES / NO ----
 function finalYes(){
+
+  // STOP background music
+  const bg = document.getElementById('bgMusic');
+  bg.pause();
+  bg.currentTime = 0;   // optional: reset to beginning
+
   document.getElementById('finalMessage').innerHTML="<br><br>💖 You said YES 💖<br>✨ The universe is ours my Queen ✨";
   document.getElementById('yesNoButtons').classList.add('hidden');
 
+  // Play chime
   document.getElementById('chime').play().catch(()=>{});
-  document.getElementById('proposalMusic').play().catch(()=>{});
 
   cosmicExplosions(); 
   cosmicExplosions();
@@ -270,5 +276,6 @@ function showInitialsNebula(text){
 </script>
 </body>
 </html>
+
 
 
