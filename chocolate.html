@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chocolate Day 🍫</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #2b1409, #5a2d0c);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.cinematic-text {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotateX(20deg);
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  color: #fff;
+  opacity: 0;
+  letter-spacing: 2px;
+  text-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  pointer-events: none;
+  z-index: 1000;
+  animation: none;
+}
+
+@keyframes cinematicReveal {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8) rotateY(0deg);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05) rotateY(360deg);
+  }
+}
+.burst-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 999;
+}
+
+.burst-item {
+  position: absolute;
+  font-size: 28px;
+  animation: fall 4s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) scale(1.2) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.choco-section {
+  text-align: center;
+  padding: 40px 20px;
+  max-width: 520px;
+  width: 100%;
+  transition: 0.5s;
+}
+
+.blur {
+  filter: blur(4px);
+}
+
+h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  opacity: 0.8;
+  margin-bottom: 25px;
+}
+
+/* Box */
+.box-cover {
+  width: 280px;
+  height: 160px;
+  margin: 0 auto 30px;
+  background: linear-gradient(135deg, #5a2d0c, #8b4513);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {transform: scale(1);}
+  50% {transform: scale(1.05);}
+  100% {transform: scale(1);}
+}
+
+/* Choice */
+.choice {
+  display: none;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.choice button {
+  padding: 12px 22px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  background: #8b4513;
+  color: white;
+  transition: 0.3s;
+}
+
+.choice button:hover {
+  transform: scale(1.1);
+  background: #a0522d;
+}
+
+/* Chocolates */
+.choco-box {
+  display: none;
+  grid-template-columns: repeat(3, 90px);
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.chocolate {
+  width: 90px;
+  height: 90px;
+  background: #8b4513;
+  border-radius: 18px;
+  font-size: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+.chocolate:hover {
+  transform: scale(1.15) rotate(-5deg);
+  background: #a0522d;
+}
+
+/* Message */
+.choco-message {
+  font-size: 20px;
+  min-height: 70px;
+  color: #ffd9b3;
+  line-height: 1.4;
+}
+
+/* Secret */
+.secret-line {
+  margin-top: 20px;
+  font-size: 15px;
+  opacity: 0.8;
+}
+
+.secret-line span {
+  display: block;
+  opacity: 0;
+  transition: 0.4s;
+  color: #ffb6c1;
+}
+
+.secret-line:hover span {
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<section id="main" class="choco-section">
+  <h2>🍫 Chocolate Day</h2>
+  <p class="subtitle">This is less about chocolate… it’s more about you 😌</p>
+
+  <div id="box" class="box-cover">
+    🎁 Click 3 times to open
+  </div>
+
+  <div id="choice" class="choice">
+    <button onclick="chooseSweet()">🍫 Something sweet</button>
+    <button onclick="chooseHonest()">🌙 Something honest</button>
+  </div>
+
+  <div id="grid" class="choco-box">
+    <div class="chocolate" data-msg="For your voice that carries depth, sweetness, and quiet innocence. ❤️">🍫</div>
+    <div class="chocolate" data-msg="For your Militry Grade Intelligence 🖤">🍩</div>
+    <div class="chocolate" data-msg="You feel less like a person and more like a feeling 🤍">🍬</div>
+    <div class="chocolate" data-msg="For the strange way my mind acts as absent when I am around you 😘">🍪</div>
+    <div class="chocolate" data-msg="For the way your mind attracts me more than anything else 🖤">🧁</div>
+    <div class="chocolate" data-msg="Because I think about you more than I would ever dare to admit 😏">🍰
+</div>
+<div class="chocolate" data-msg="Sometimes I wonder when exactly you became important to me. 🤍">🍬</div>
+
+  </div>
+
+  <div id="msg" class="choco-message">
+    Okay fine… I admit it. You’re already my favourite part of today.
+  </div>
+
+
+
+  <div class="secret-line">
+    My secret 💌
+    <span>I’m not interested in temporary sweetness… I already have you..</span>
+  </div>
+</section>
+
+<script>
+let musicStarted = false;
+const bgMusic = document.getElementById("bgMusic");
+
+function startMusicOnce() {
+  if (!musicStarted) {
+    bgMusic.play();
+    musicStarted = true;
+    console.log("Music started");
+  }
+}
+
+// First interaction triggers music
+document.addEventListener("click", startMusicOnce);
+document.addEventListener("touchstart", startMusicOnce);
+document.addEventListener("scroll", startMusicOnce);
+
+const herName = "Anjali"; 
+// You can replace with her real name
+
+// Put ONE real shared memory here:
+const realMemory = "We talked for hours that day, and realised we had connected without remembering each other's face. 😌";
+
+const box = document.getElementById("box");
+const grid = document.getElementById("grid");
+const chocolates = document.querySelectorAll(".chocolate");
+const msg = document.getElementById("msg");
+const choice = document.getElementById("choice");
+const main = document.getElementById("main");
+
+let openCount = 0;
+let totalClicks = 0;
+
+// Memory (last visit)
+const last = localStorage.getItem("favChocolate");
+if(last){
+  msg.innerText = `${herName}, last time you chose "${last}". I remembered.`;
+}
+
+// Box open
+box.addEventListener("click", () => {
+  openCount++;
+  box.innerText = `Almost... ${openCount}/3 🍫`;
+  if(openCount === 3){
+    box.style.display="none";
+    choice.style.display="flex";
+    msg.innerText = `${herName}, before we continue… what do you want right now?`;
+  }
+});
+
+// Choice
+function chooseSweet(){
+  choice.style.display="none";
+  grid.style.display="grid";
+  msg.innerText = "Okay… let’s keep it light and sweet 😌";
+}
+
+function chooseHonest(){
+  choice.style.display="none";
+  grid.style.display="grid";
+  msg.innerText = "Then I’ll be honest with you… I don’t feel guarded with you.";
+}
+
+// Chocolates
+chocolates.forEach(choco=>{
+  choco.addEventListener("click",()=>{
+    const baseMsg = choco.dataset.msg;
+    msg.innerText = baseMsg;
+    localStorage.setItem("favChocolate", baseMsg);
+    totalClicks++;
+
+    if(totalClicks === 3){
+      msg.innerText = `This reminds me of ${realMemory}`;
+    }
+
+    if(totalClicks === 5){
+      msg.innerText = "This feels very you… sweet, a little dramatic, and impossible to ignore.";
+    }
+    if(totalClicks === 4){
+  main.classList.add("blur");
+  setTimeout(()=>{
+    main.classList.remove("blur");
+    msg.innerText = "I don’t know where this goes… but I know my mind is already involved.";
+    burstChocolates();   // 💥 final reward
+  },800);
+}
+    if(totalClicks === 8){
+      msg.innerText = "I didn’t fall for you. My mind kept choosing you, quietly..";
+    }
+ if(totalClicks === 6){
+  main.classList.add("blur");
+
+  setTimeout(()=>{
+    main.classList.remove("blur");
+    msg.innerText = "I don’t know where this goes… but I know my mind is already involved.";
+
+    burstChocolates(); // 🍫💋
+
+    const text = document.getElementById("cinematicText");
+    text.style.animation = "cinematicReveal 6s ease forwards";
+
+  },800);
+}
+    if(totalClicks === 9){
+      main.classList.add("blur");
+      setTimeout(()=>{
+        main.classList.remove("blur");
+        msg.innerText = "I don’t know where this goes… I just know I like being here with you.";
+      },600);
+    }
+  });
+});
+
+function burstChocolates() {
+  const container = document.getElementById("chocoBurst");
+  const emojis = ["🍫","🍫","🍫","💋","💋","💖"];
+const lines = [
+  "I love you Anjali 🤍",
+  "More than I planned",
+  "More than I expected",
+  "More than I admit"
+];
+
+let i = 0;
+setInterval(()=>{
+  const text = document.getElementById("cinematicText");
+  i = (i + 1) % lines.length;
+  text.innerText = lines[i];
+}, 1800);
+  for(let i = 0; i < 30; i++){
+    const span = document.createElement("span");
+    span.className = "burst-item";
+    span.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+    span.style.left = Math.random()*100 + "vw";
+    span.style.top = "-30px";
+    span.style.animationDelay = Math.random()*0.8 + "s";
+    span.style.fontSize = (20 + Math.random()*20) + "px";
+    container.appendChild(span);
+
+    setTimeout(()=>{
+      span.remove();
+    },4000);
+  }
+}
+
+</script>
+<div id="chocoBurst" class="burst-container"></div>
+<div id="cinematicText" class="cinematic-text">
+  I love you Anjali 🤍
+</div>
+<audio id="bgMusic" loop>
+  <source src="chocomusic.mp3" type="audio/mpeg">
+</audio>
+</body>
+</html>
