@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Promise Day 💍</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter&display=swap" rel="stylesheet">
+
+<style>
+body{
+margin:0;
+font-family:Inter;
+background:radial-gradient(circle at top,#2a003d,#000);
+color:white;
+text-align:center;
+overflow-x:hidden;
+}
+.screen{display:none;min-height:100vh;padding:40px 20px}
+.active{display:block}
+h1{font-family:'Playfair Display'}
+button{
+padding:12px 24px;
+border:none;
+border-radius:30px;
+background:#ff4d88;
+color:white;
+font-size:16px;
+margin:10px;
+cursor:pointer;
+}
+
+body.bg-love{
+background:
+linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)),
+url("bg-promise.png") center/cover no-repeat fixed;
+animation: zoomBg 8s ease forwards;
+}
+
+@keyframes zoomBg{
+from{ background-size:100%; }
+to{ background-size:105%; }
+}
+.secondary{background:#444}
+.card{
+background:rgba(255,255,255,0.1);
+padding:25px;
+border-radius:20px;
+max-width:500px;
+margin:20px auto;
+}
+.choice{
+background:#ff4d88;
+padding:14px;
+margin:10px auto;
+border-radius:20px;
+max-width:400px;
+cursor:pointer;
+}
+.choice.selected{background:#00ffaa;color:#000}
+textarea,input{
+width:90%;
+max-width:400px;
+padding:12px;
+border-radius:10px;
+border:none;
+margin:10px;
+font-size:16px;
+}
+.confetti{
+position:fixed;
+width:8px;
+height:8px;
+background:pink;
+animation:fall 3s linear infinite;
+}
+@keyframes fall{
+0%{top:-10px}
+100%{top:110vh}
+}
+ul{text-align:left;max-width:500px;margin:auto}
+li{margin:10px 0}
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+<source src="bg-promise.mp3">
+</audio>
+
+<!-- SCREEN 1 -->
+<div id="s1" class="screen active">
+<h1>Promise Day 💍</h1>
+<p>Close your eyes for a moment.<br>Who is already in your mind?</p>
+<input id="nameInput" placeholder="Type the name...">
+<br>
+<button onclick="checkName()">Continue</button>
+<p id="nameMsg"></p>
+</div>
+
+<!-- SCREEN 2 -->
+<div id="s2" class="screen">
+<h1>Anjali 💖</h1>
+<p>You chose Vishal.<br>Select the promises you want from him.</p>
+<div id="promiseChoices"></div>
+<button onclick="nextFromMe()">Continue</button>
+<button class="secondary" onclick="show('s1')">Back</button>
+</div>
+
+<!-- SCREEN 3 -->
+<div id="s3" class="screen">
+<h1>Your Promises to Vishal</h1>
+<p>Now your heart speaks.</p>
+<div class="card">
+<textarea id="p1" placeholder="When I start hating you, I promise to..."></textarea>
+<textarea id="p2" placeholder="When you're insecure, I promise to..."></textarea>
+<textarea id="p3" placeholder="When you're tired, I promise to..."></textarea>
+<textarea id="p4" placeholder="When you're happy, I promise to..."></textarea>
+<textarea id="p5" placeholder="Forever, I promise to..."></textarea>
+</div>
+<button onclick="generateFinal()">Finish</button>
+<button class="secondary" onclick="show('s2')">Back</button>
+</div>
+
+<!-- SCREEN 4 -->
+<div id="s4" class="screen">
+<h1>Our Promise Book 💍</h1>
+<div class="card">
+<p><b>Anjali chose these promises from Vishal:</b></p>
+<ul id="fromMeList"></ul>
+
+<p><b>Anjali's promises to Vishal:</b></p>
+<ul id="fromHerList"></ul>
+
+<h2 id="finalLine"></h2>
+</div>
+
+<button onclick="share()">Send on WhatsApp 💬</button>
+<button class="secondary" onclick="location.reload()">Restart</button>
+</div>
+
+<script>
+let chosenFromMe = [];
+let herPromises = [];
+
+const fromMePromises = [
+"I promise to never invalidate your feelings.",
+"I promise to choose you every day and be always with you.",
+"I promise to listen without interrupting.",
+"I promise to protect your heart.",
+"I promise to make you feel loved every evening and morning.",
+"I promise to stay when things get difficult.",
+"I promise to grow with you, not away from you.",
+"I promise to respect your emotions.",
+"I promise to never make you feel alone.",
+"I promise to share each and every thought of mine."
+];
+
+function show(id){
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+function checkName(){
+let val = document.getElementById("nameInput").value.trim();
+if(val.toLowerCase()=="vishal"){
+document.body.classList.add("bg-love");
+document.getElementById("music").play();
+loadPromises();
+show("s2");
+}else{
+document.getElementById("nameMsg").innerText="Your heart is hesitating. Try again honestly.";
+}
+}
+function loadPromises(){
+let html="";
+fromMePromises.forEach(p=>{
+html+=`<div class="choice" onclick="togglePromise(this,'${p}')">${p}</div>`;
+});
+promiseChoices.innerHTML=html;
+}
+
+function togglePromise(el,text){
+if(el.classList.contains("selected")){
+el.classList.remove("selected");
+chosenFromMe=chosenFromMe.filter(p=>p!==text);
+}else{
+el.classList.add("selected");
+chosenFromMe.push(text);
+}
+}
+
+function nextFromMe(){
+if(chosenFromMe.length<3){
+alert("Choose at least 3 promises.");
+return;
+}
+show("s3");
+}
+
+function generateFinal(){
+herPromises = [
+{q:"When we fight, and I start hating you...", a:p1.value},
+{q:"When you're insecure, I promise to...", a:p2.value},
+{q:"When you're tired, I promise to...", a:p3.value},
+{q:"When you're happy, I promise to...", a:p4.value},
+{q:"Forever, I promise to...", a:p5.value}
+];
+renderFinal();
+show("s4");
+confetti();
+}
+
+function renderFinal(){
+fromMeList.innerHTML="";
+chosenFromMe.forEach(p=>{
+fromMeList.innerHTML+=`<li>💖 ${p}</li>`;
+});
+
+fromHerList.innerHTML="";
+herPromises.forEach(p=>{
+fromHerList.innerHTML+=`
+<li>
+<b>${p.q}</b><br>
+💍 ${p.a}
+</li>`;
+});
+
+finalLine.innerText="My Anjali, I promise I will always keep these promises ❤️";
+}
+
+function share(){
+let text="Our Promise Day 💍\n\n";
+text+="Anjali chose these promises from Vishal:\n";
+chosenFromMe.forEach(p=>text+="• "+p+"\n");
+text+="\nAnjali's promises to Vishal:\n\n";
+herPromises.forEach(p=>{
+text+=p.q+"\n";
+text+="→ "+p.a+"\n\n";
+});
+window.open("https://wa.me/?text="+encodeURIComponent(text));
+}
+
+function confetti(){
+for(let i=0;i<40;i++){
+let d=document.createElement("div");
+d.className="confetti";
+d.style.left=Math.random()*100+"vw";
+d.style.animationDuration=(2+Math.random()*3)+"s";
+document.body.appendChild(d);
+setTimeout(()=>d.remove(),4000);
+}
+}
+</script>
+
+</body>
+</html>
