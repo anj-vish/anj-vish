@@ -340,11 +340,12 @@ function typeWriter(text){
 
   function typing(){
     if(i < chars.length){
-      container.innerHTML += chars[i];
+      // Append text node instead of using innerHTML
+      container.appendChild(document.createTextNode(chars[i]));
       i++;
 
-      // Scale emoji dynamically but capped to prevent freezing
-      let scale = 1 + Math.min((i / chars.length) * 2, 2); 
+      // Scale emoji but limit max size
+      let scale = 1 + Math.min((i / chars.length) * 1.5, 2);
       emoji.style.transform = "scale(" + scale + ")";
 
       setTimeout(typing, speed);
@@ -352,6 +353,7 @@ function typeWriter(text){
   }
   typing();
 }
+
 
 
 /* Live Clock */
@@ -368,5 +370,6 @@ function startClock(){
 </script>
 </body>
 </html>
+
 
 
