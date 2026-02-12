@@ -335,12 +335,18 @@ function typeWriter(text){
   let emoji = document.getElementById("growingEmoji");
   container.innerHTML = "";
 
+  // Split string into array of Unicode-aware characters
+  let chars = Array.from(text);
+
   function typing(){
-    if(i < text.length){
-      container.innerHTML += text.charAt(i);
+    if(i < chars.length){
+      container.innerHTML += chars[i];
       i++;
-      let scale = 1 + (i / text.length) * 2;
+
+      // Scale emoji dynamically
+      let scale = 1 + (i / chars.length) * 2;
       emoji.style.transform = "scale(" + scale + ")";
+
       setTimeout(typing, speed);
     }
   }
@@ -361,3 +367,4 @@ function startClock(){
 </script>
 </body>
 </html>
+
