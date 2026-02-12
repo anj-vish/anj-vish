@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hug Day – Only For Anjali</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+
+body{
+  background: url('bg-hug.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  color:white;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  font-family:'Segoe UI',sans-serif;
+  position:relative;
+}
+@media (max-width: 768px){
+  body {
+    background-position: center top; /* keeps main content visible on phones */
+  }
+}
+
+body::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.5);
+  z-index:-1;
+}
+
+.screen{
+  position:absolute;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  transition:1s;
+  background: transparent; /* important! */
+}
+
+
+.hidden{opacity:0;pointer-events:none}
+
+input{
+  padding:12px 20px;
+  border-radius:30px;
+  border:none;
+  outline:none;
+  font-size:18px;
+  margin-top:20px;
+}
+
+button{
+  padding:12px 25px;
+  margin:15px;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  cursor:pointer;
+  background:linear-gradient(45deg,#ff007f,#ff4da6);
+  color:white;
+  transition:.4s;
+}
+button:hover{transform:scale(1.1)}
+
+h1{
+  font-size:40px;
+  background:linear-gradient(45deg,#ff66cc,#ff1493);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation: glow 2s infinite alternate;
+}
+@keyframes glow{
+  from{text-shadow:0 0 10px #ff1493}
+  to{text-shadow:0 0 30px #ff66cc}
+}
+
+.floating{
+  position:absolute;
+  animation: float 8s linear infinite;
+  font-size:20px;
+  color:#ff99cc;
+  opacity:0.7;
+}
+@keyframes float{
+  from{transform:translateY(100vh)}
+  to{transform:translateY(-10vh)}
+}
+
+/* Hug Scene */
+#hugScene::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.3); /* subtle dark overlay */
+  z-index:-1;
+}
+
+#clock{
+  position:absolute;
+  top:20px;
+  font-size:16px;
+  letter-spacing:2px;
+  color:#ff99cc;
+}
+
+#passionText{
+  max-width:800px;
+  font-size:20px;
+  line-height:1.9;
+  padding:30px;
+  white-space:pre-line;
+}
+
+#growingEmoji{
+  position:absolute;
+  bottom:80px;
+  font-size:30px;
+  transition:transform .3s ease;
+  animation: pulse 1.2s infinite alternate;
+}
+
+@keyframes pulse{
+  from{transform:scale(1)}
+  to{transform:scale(1.2)}
+}
+</style>
+</head>
+<body>
+
+<!-- Name Screen -->
+<div id="nameScreen" class="screen">
+  <h1>Enter Your Name</h1>
+  <input type="text" id="nameInput" placeholder="Type your name...">
+  <button onclick="checkName()">Enter</button>
+</div>
+
+<!-- Reject -->
+<div id="rejectScreen" class="screen hidden">
+  <h1>This place belongs to only one girl.</h1>
+</div>
+
+<!-- Welcome -->
+<div id="welcomeScreen" class="screen hidden">
+  <h1>Welcome Anjali ❤️</h1>
+  <div id="loveMessages"></div>
+  <button onclick="askHug()">Continue</button>
+</div>
+
+<!-- Ask -->
+<div id="askScreen" class="screen hidden">
+  <h1>Do you want a hug? 🤍</h1>
+  <button onclick="startHug()">Yes</button>
+  <button onclick="goBack()">No</button>
+</div>
+
+<!-- Hug Scene -->
+<div id="hugScene" class="screen hidden">
+  <h1 id="clock"></h1>
+  <div id="passionText"></div>
+  <div id="growingEmoji">❤️</div>
+  <button onclick="location.reload()">Exit</button>
+</div>
+
+<!-- Music -->
+<audio id="bgMusic" loop>
+  <source src="bg-hug.mp3">
+</audio>
+
+<script>
+let musicStarted = false;
+
+/* Name Check */
+function checkName(){
+  let name = document.getElementById("nameInput").value.trim().toLowerCase();
+  let music = document.getElementById("bgMusic");
+
+  if(name === "anjali"){
+    if(!musicStarted){
+      music.volume = 0;
+      music.play();
+      musicStarted = true;
+
+      let fade = setInterval(function(){
+        if(music.volume < 0.8){
+          music.volume += 0.05;
+        }else{
+          clearInterval(fade);
+        }
+      },200);
+    }
+
+    document.getElementById("nameScreen").classList.add("hidden");
+    document.getElementById("welcomeScreen").classList.remove("hidden");
+    createLove();
+
+  } else {
+    document.getElementById("nameScreen").classList.add("hidden");
+    document.getElementById("rejectScreen").classList.remove("hidden");
+  }
+}
+
+/* Auto trigger while typing */
+document.getElementById("nameInput").addEventListener("input", function(){
+  if(this.value.trim().toLowerCase() === "anjali"){
+    checkName();
+  }
+});
+
+/* Floating Love Messages */
+function createLove(){
+  let container=document.getElementById("loveMessages");
+  let messages=[
+    "You are my peace 🌸",
+    "My forever ❤️",
+    "My safest place 🤍",
+    "My heartbeat 💓",
+    "Only you 💞"
+  ];
+  for(let i=0;i<30;i++){
+    let span=document.createElement("div");
+    span.className="floating";
+    span.style.left=Math.random()*100+"vw";
+    span.style.animationDuration=5+Math.random()*5+"s";
+    span.innerText=messages[Math.floor(Math.random()*messages.length)];
+    container.appendChild(span);
+  }
+}
+
+function askHug(){
+  document.getElementById("welcomeScreen").classList.add("hidden");
+  document.getElementById("askScreen").classList.remove("hidden");
+}
+
+function goBack(){
+  document.getElementById("askScreen").classList.add("hidden");
+  document.getElementById("welcomeScreen").classList.remove("hidden");
+}
+
+/* Hug Scene */
+function startHug(){
+  document.getElementById("askScreen").classList.add("hidden");
+  document.getElementById("hugScene").classList.remove("hidden");
+  startClock();
+
+  let text = `
+Anjali…
+
+At this exact moment… I am holding you.
+
+Not casually.
+Not lightly.
+
+But with intention.
+
+My arms wrap around you firmly…
+pulling you into my chest…
+until there is no distance left between us.
+
+You feel that warmth?
+
+That steady pressure on your back?
+
+That’s not just passion.
+That’s protection.
+
+My heartbeat begins syncing with yours.
+Slow.
+Deep.
+Certain.
+
+My fingers trace gently along your spine…
+memorizing you…
+calming you.
+
+You soften into me…
+and I tighten my embrace.
+
+Not to hold you captive.
+But to let your soul know —
+you are chosen.
+
+I lower my head near yours.
+Close enough to whisper without words.
+
+If the world vanished right now…
+I would still be complete.
+
+Because you are here.
+
+In this hug,
+there is healing.
+
+In this closeness,
+there is safety.
+
+In this pressure around your waist,
+there is devotion.
+
+Let your worries melt.
+Let your fears dissolve.
+
+Stay here.
+
+Feel how deeply you are wanted.
+How fiercely you are protected.
+How completely you are loved.
+
+And I am not letting go.
+`;
+
+  typeWriter(text);
+}
+
+/* Typewriter + Growing Heart */
+function typeWriter(text){
+  let i = 0;
+  let speed = 45;
+  let container = document.getElementById("passionText");
+  let emoji = document.getElementById("growingEmoji");
+  container.innerHTML = "";
+
+  function typing(){
+    if(i < text.length){
+      container.innerHTML += text.charAt(i);
+      i++;
+      let scale = 1 + (i / text.length) * 2;
+      emoji.style.transform = "scale(" + scale + ")";
+      setTimeout(typing, speed);
+    }
+  }
+  typing();
+}
+
+/* Live Clock */
+function startClock(){
+  function updateClock(){
+    let now = new Date();
+    document.getElementById("clock").innerText =
+      "This moment with you: " + now.toLocaleTimeString();
+  }
+  updateClock();
+  setInterval(updateClock,1000);
+}
+
+</script>
+</body>
+</html>
