@@ -6,39 +6,29 @@
 <title>Hug Day – Only For Anjali</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-
-body{
+/* --- Global Styles --- */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+body {
   background: url('bg-hug.jpeg') no-repeat center center fixed;
   background-size: cover;
-  color:white;
   height:100vh;
   overflow:hidden;
   display:flex;
   justify-content:center;
   align-items:center;
-  text-align:center;
-  font-family:'Segoe UI',sans-serif;
+  color:white;
   position:relative;
+  text-align:center;
 }
-@media (max-width: 768px){
-  body {
-    background-position: center top; /* keeps main content visible on phones */
-  }
-}
-
-body::before{
+body::before {
   content:"";
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background: rgba(0,0,0,0.5);
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.6); /* darker cinematic overlay */
   z-index:-1;
 }
 
-.screen{
+/* --- Screens --- */
+.screen {
   position:absolute;
   width:100%;
   height:100%;
@@ -46,130 +36,124 @@ body::before{
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  transition:1s;
-  background: transparent; /* important! */
+  padding:20px;
+  transition:opacity 1s ease;
 }
+.hidden { opacity:0; pointer-events:none; transform:scale(0.95); transition:opacity 0.8s, transform 0.8s; }
 
-
-.hidden{opacity:0;pointer-events:none}
-
-input{
-  padding:12px 20px;
-  border-radius:30px;
-  border:none;
-  outline:none;
-  font-size:18px;
-  margin-top:20px;
-}
-
-button{
-  padding:12px 25px;
-  margin:15px;
-  border:none;
-  border-radius:30px;
-  font-size:16px;
-  cursor:pointer;
-  background:linear-gradient(45deg,#ff007f,#ff4da6);
-  color:white;
-  transition:.4s;
-}
-button:hover{transform:scale(1.1)}
-
-h1{
-  font-size:40px;
-  background:linear-gradient(45deg,#ff66cc,#ff1493);
+/* --- Text & Titles --- */
+h1 {
+  font-size:3em;
+  background: linear-gradient(45deg,#ff66cc,#ff1493);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
   animation: glow 2s infinite alternate;
 }
-@keyframes glow{
-  from{text-shadow:0 0 10px #ff1493}
-  to{text-shadow:0 0 30px #ff66cc}
+@keyframes glow {
+  from { text-shadow:0 0 10px #ff1493; }
+  to { text-shadow:0 0 30px #ff66cc; }
 }
 
-.floating{
+/* --- Inputs & Buttons --- */
+input {
+  padding:12px 25px;
+  border-radius:50px;
+  border:none;
+  outline:none;
+  font-size:1.1em;
+  margin-top:20px;
+  width:250px;
+  text-align:center;
+}
+button {
+  padding:12px 30px;
+  margin:15px;
+  border:none;
+  border-radius:50px;
+  font-size:1em;
+  cursor:pointer;
+  background: linear-gradient(45deg,#ff007f,#ff4da6);
+  color:white;
+  transition: transform 0.3s;
+}
+button:hover { transform:scale(1.1); }
+
+/* --- Floating Love Messages --- */
+.floating {
   position:absolute;
-  animation: float 8s linear infinite;
   font-size:20px;
   color:#ff99cc;
-  opacity:0.7;
+  opacity:0.8;
+  animation: float linear infinite;
 }
-@keyframes float{
-  from{transform:translateY(100vh)}
-  to{transform:translateY(-10vh)}
+@keyframes float {
+  from { transform:translateY(100vh); opacity:0; }
+  50% { opacity:1; }
+  to { transform:translateY(-10vh); opacity:0; }
 }
 
-/* Hug Scene */
-#hugScene::before{
+/* --- Hug Scene --- */
+#hugScene::before {
   content:"";
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background: rgba(0,0,0,0.3); /* subtle dark overlay */
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.4);
   z-index:-1;
 }
-
-#clock{
+#clock {
   position:absolute;
   top:20px;
-  font-size:16px;
-  letter-spacing:2px;
+  font-size:1em;
+  letter-spacing:1px;
   color:#ff99cc;
 }
-
-#passionText{
+#passionText {
   max-width:800px;
-  font-size:20px;
-  line-height:1.9;
-  padding:30px;
+  font-size:1.2em;
+  line-height:2;
   white-space:pre-line;
+  text-align:left;
+  margin:40px auto;
 }
-
-#growingEmoji{
-  position:absolute;
-  bottom:80px;
-  font-size:30px;
-  transition:transform .3s ease;
-  animation: pulse 1.2s infinite alternate;
+#growingEmoji {
+  font-size:40px;
+  transition: transform 0.3s ease;
+  animation: pulse 1s infinite alternate;
 }
+@keyframes pulse { from { transform:scale(1); } to { transform:scale(1.3); } }
 
-@keyframes pulse{
-  from{transform:scale(1)}
-  to{transform:scale(1.2)}
+/* --- Responsive --- */
+@media (max-width:768px) {
+  h1 { font-size:2em; }
+  input { width:200px; font-size:1em; }
+  #passionText { font-size:1em; line-height:1.7; }
 }
 </style>
 </head>
 <body>
 
-<!-- Name Screen -->
+<!-- --- Screens --- -->
 <div id="nameScreen" class="screen">
   <h1>Enter Your Name</h1>
   <input type="text" id="nameInput" placeholder="Type your name...">
   <button onclick="checkName()">Enter</button>
 </div>
 
-<!-- Reject -->
 <div id="rejectScreen" class="screen hidden">
   <h1>This place belongs to only one girl.</h1>
 </div>
 
-<!-- Welcome -->
 <div id="welcomeScreen" class="screen hidden">
   <h1>Welcome Anjali ❤️</h1>
   <div id="loveMessages"></div>
   <button onclick="askHug()">Continue</button>
 </div>
 
-<!-- Ask -->
 <div id="askScreen" class="screen hidden">
   <h1>Do you want a hug? 🤍</h1>
   <button onclick="startHug()">Yes</button>
   <button onclick="goBack()">No</button>
 </div>
 
-<!-- Hug Scene -->
 <div id="hugScene" class="screen hidden">
   <h1 id="clock"></h1>
   <div id="passionText"></div>
@@ -177,15 +161,15 @@ h1{
   <button onclick="location.reload()">Exit</button>
 </div>
 
-<!-- Music -->
+<!-- --- Music --- -->
 <audio id="bgMusic" loop>
-  <source src="bg-hug.mp3">
+  <source src="bg-hug.mp3" type="audio/mpeg">
 </audio>
 
 <script>
 let musicStarted = false;
 
-/* Name Check */
+/* --- Name Check --- */
 function checkName(){
   let name = document.getElementById("nameInput").value.trim().toLowerCase();
   let music = document.getElementById("bgMusic");
@@ -195,67 +179,47 @@ function checkName(){
       music.volume = 0;
       music.play();
       musicStarted = true;
-
-      let fade = setInterval(function(){
-        if(music.volume < 0.8){
-          music.volume += 0.05;
-        }else{
-          clearInterval(fade);
-        }
+      let fade = setInterval(()=>{
+        if(music.volume < 0.8) music.volume += 0.05;
+        else clearInterval(fade);
       },200);
     }
 
-    document.getElementById("nameScreen").classList.add("hidden");
-    document.getElementById("welcomeScreen").classList.remove("hidden");
+    toggleScreen("nameScreen","welcomeScreen");
     createLove();
-
   } else {
-    document.getElementById("nameScreen").classList.add("hidden");
-    document.getElementById("rejectScreen").classList.remove("hidden");
+    toggleScreen("nameScreen","rejectScreen");
   }
 }
 
-/* Auto trigger while typing */
+/* --- Auto trigger on typing --- */
 document.getElementById("nameInput").addEventListener("input", function(){
   if(this.value.trim().toLowerCase() === "anjali"){
     checkName();
   }
 });
 
-/* Floating Love Messages */
+/* --- Floating Love Messages --- */
 function createLove(){
-  let container=document.getElementById("loveMessages");
-  let messages=[
-    "You are my peace 🌸",
-    "My forever ❤️",
-    "My safest place 🤍",
-    "My heartbeat 💓",
-    "Only you 💞"
-  ];
+  let container = document.getElementById("loveMessages");
+  let messages = ["You are my peace 🌸","My forever ❤️","My safest place 🤍","My heartbeat 💓","Only you 💞"];
   for(let i=0;i<30;i++){
-    let span=document.createElement("div");
+    let span = document.createElement("div");
     span.className="floating";
-    span.style.left=Math.random()*100+"vw";
-    span.style.animationDuration=5+Math.random()*5+"s";
-    span.innerText=messages[Math.floor(Math.random()*messages.length)];
+    span.style.left = Math.random()*100+"vw";
+    span.style.animationDuration = 5+Math.random()*5+"s";
+    span.innerText = messages[Math.floor(Math.random()*messages.length)];
     container.appendChild(span);
   }
 }
 
-function askHug(){
-  document.getElementById("welcomeScreen").classList.add("hidden");
-  document.getElementById("askScreen").classList.remove("hidden");
-}
+/* --- Ask Hug --- */
+function askHug(){ toggleScreen("welcomeScreen","askScreen"); }
+function goBack(){ toggleScreen("askScreen","welcomeScreen"); }
 
-function goBack(){
-  document.getElementById("askScreen").classList.add("hidden");
-  document.getElementById("welcomeScreen").classList.remove("hidden");
-}
-
-/* Hug Scene */
- function startHug(){
-  document.getElementById("askScreen").classList.add("hidden");
-  document.getElementById("hugScene").classList.remove("hidden");
+/* --- Hug Scene --- */
+function startHug(){
+  toggleScreen("askScreen","hugScene");
   startClock();
 
   let text = `
@@ -289,68 +253,55 @@ Feel how deeply you are wanted, fiercely protected, completely loved.
 
 And I am not letting go.
 `;
-
   typeWriterSmooth(text);
 }
-  
- 
 
-  
-
-/* Typewriter + Growing Heart */
+/* --- Smooth Typewriter --- */
 function typeWriterSmooth(text){
   const container = document.getElementById("passionText");
   const emoji = document.getElementById("growingEmoji");
   container.innerHTML = "";
-
-  // Split by line breaks for easier rendering
   const lines = text.split('\n');
-  let lineIndex = 0;
-  let charIndex = 0;
+  let lineIndex=0, charIndex=0;
 
-  function draw() {
+  function draw(){
     if(lineIndex >= lines.length) return;
-
     let line = lines[lineIndex];
+
     if(charIndex < line.length){
       container.appendChild(document.createTextNode(line[charIndex]));
       charIndex++;
     } else {
       container.appendChild(document.createElement("br"));
       lineIndex++;
-      charIndex = 0;
+      charIndex=0;
     }
 
-    // Smooth emoji scale
     let totalChars = text.replace(/\n/g,'').length;
     let typedChars = lines.slice(0,lineIndex).join('').length + charIndex;
-    let scale = 1 + Math.min((typedChars / totalChars) * 1.5, 2);
+    let scale = 1 + Math.min((typedChars/totalChars)*1.5,2);
     emoji.style.transform = `scale(${scale})`;
 
-    requestAnimationFrame(draw);
+    if(lineIndex<lines.length) setTimeout(draw,30); // smooth typing speed
   }
-
-  requestAnimationFrame(draw);
+  draw();
 }
 
-
-
-/* Live Clock */
+/* --- Live Clock --- */
 function startClock(){
   function updateClock(){
     let now = new Date();
-    document.getElementById("clock").innerText =
-      "This moment with you: " + now.toLocaleTimeString();
+    document.getElementById("clock").innerText = "This moment with you: " + now.toLocaleTimeString();
   }
   updateClock();
   setInterval(updateClock,1000);
 }
 
+/* --- Utility --- */
+function toggleScreen(hideId, showId){
+  document.getElementById(hideId).classList.add("hidden");
+  document.getElementById(showId).classList.remove("hidden");
+}
 </script>
 </body>
 </html>
-
-
-
-
-
