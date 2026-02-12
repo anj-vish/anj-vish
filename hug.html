@@ -253,7 +253,7 @@ function goBack(){
 }
 
 /* Hug Scene */
-function startHug(){
+ function startHug(){
   document.getElementById("askScreen").classList.add("hidden");
   document.getElementById("hugScene").classList.remove("hidden");
   startClock();
@@ -324,34 +324,47 @@ How completely you are loved.
 And I am not letting go.
 `;
 
-  typeWriter(text);
+  typeWriterSmooth(text);
 }
+  
+ 
+
+  
 
 /* Typewriter + Growing Heart */
-function typeWriter(text){
-  let i = 0;
-  let speed = 45;
-  let container = document.getElementById("passionText");
-  let emoji = document.getElementById("growingEmoji");
+function typeWriterSmooth(text){
+  const container = document.getElementById("passionText");
+  const emoji = document.getElementById("growingEmoji");
   container.innerHTML = "";
 
-  // Split string into array of Unicode-aware characters
-  let chars = Array.from(text);
+  // Split by line breaks for easier rendering
+  const lines = text.split('\n');
+  let lineIndex = 0;
+  let charIndex = 0;
 
-  function typing(){
-    if(i < chars.length){
-      // Append text node instead of using innerHTML
-      container.appendChild(document.createTextNode(chars[i]));
-      i++;
+  function draw() {
+    if(lineIndex >= lines.length) return;
 
-      // Scale emoji but limit max size
-      let scale = 1 + Math.min((i / chars.length) * 1.5, 2);
-      emoji.style.transform = "scale(" + scale + ")";
-
-      setTimeout(typing, speed);
+    let line = lines[lineIndex];
+    if(charIndex < line.length){
+      container.appendChild(document.createTextNode(line[charIndex]));
+      charIndex++;
+    } else {
+      container.appendChild(document.createElement("br"));
+      lineIndex++;
+      charIndex = 0;
     }
+
+    // Smooth emoji scale
+    let totalChars = text.replace(/\n/g,'').length;
+    let typedChars = lines.slice(0,lineIndex).join('').length + charIndex;
+    let scale = 1 + Math.min((typedChars / totalChars) * 1.5, 2);
+    emoji.style.transform = `scale(${scale})`;
+
+    requestAnimationFrame(draw);
   }
-  typing();
+
+  requestAnimationFrame(draw);
 }
 
 
@@ -370,6 +383,7 @@ function startClock(){
 </script>
 </body>
 </html>
+
 
 
 
