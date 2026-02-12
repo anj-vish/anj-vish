@@ -343,8 +343,8 @@ function typeWriter(text){
       container.innerHTML += chars[i];
       i++;
 
-      // Scale emoji dynamically
-      let scale = 1 + (i / chars.length) * 2;
+      // Scale emoji dynamically but capped to prevent freezing
+      let scale = 1 + Math.min((i / chars.length) * 2, 2); 
       emoji.style.transform = "scale(" + scale + ")";
 
       setTimeout(typing, speed);
@@ -352,6 +352,7 @@ function typeWriter(text){
   }
   typing();
 }
+
 
 /* Live Clock */
 function startClock(){
@@ -367,4 +368,5 @@ function startClock(){
 </script>
 </body>
 </html>
+
 
